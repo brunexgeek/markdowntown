@@ -164,7 +164,7 @@ const char *markdowntown_get_token_name( int tok );
     TOK_OPEN_STRONG = 269,
     TOK_OPEN_UNORDERED_LIST = 270,
     TOK_OPEN_ORDERED_LIST = 271,
-    TOK_OPEN_SQUARE_BRACKET = 272,
+    TOK_OPEN_URL = 272,
     TOK_CLOSE_BLOCKQUOTE = 273,
     TOK_CLOSE_PARAGRAPH = 274,
     TOK_CLOSE_HEADING = 275,
@@ -173,7 +173,7 @@ const char *markdowntown_get_token_name( int tok );
     TOK_CLOSE_STRONG = 278,
     TOK_CLOSE_UNORDERED_LIST = 279,
     TOK_CLOSE_ORDERED_LIST = 280,
-    TOK_CLOSE_SQUARE_BRACKET = 281,
+    TOK_CLOSE_URL = 281,
     TOK_LINE = 282,
     TOK_RAW_TEXT = 283
   };
@@ -552,18 +552,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  34
+#define YYFINAL  36
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   128
+#define YYLAST   148
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  29
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  18
+#define YYNNTS  19
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  30
+#define YYNRULES  32
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  48
+#define YYNSTATES  53
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -614,8 +614,8 @@ static const yytype_uint16 yyrline[] =
 {
        0,   219,   219,   223,   225,   230,   231,   232,   233,   234,
      235,   239,   244,   249,   254,   259,   264,   270,   272,   277,
-     278,   279,   280,   281,   282,   286,   291,   296,   301,   306,
-     311
+     278,   279,   280,   281,   282,   283,   287,   292,   297,   302,
+     307,   312,   317
 };
 #endif
 
@@ -628,15 +628,14 @@ static const char *const yytname[] =
   "TOK_SM", "TOK_COLON", "TOK_BOL", "TOK_OPEN_BLOCKQUOTE",
   "TOK_OPEN_PARAGRAPH", "TOK_OPEN_HEADING", "TOK_OPEN_BOLD",
   "TOK_OPEN_ITALIC", "TOK_OPEN_STRONG", "TOK_OPEN_UNORDERED_LIST",
-  "TOK_OPEN_ORDERED_LIST", "TOK_OPEN_SQUARE_BRACKET",
-  "TOK_CLOSE_BLOCKQUOTE", "TOK_CLOSE_PARAGRAPH", "TOK_CLOSE_HEADING",
-  "TOK_CLOSE_BOLD", "TOK_CLOSE_ITALIC", "TOK_CLOSE_STRONG",
-  "TOK_CLOSE_UNORDERED_LIST", "TOK_CLOSE_ORDERED_LIST",
-  "TOK_CLOSE_SQUARE_BRACKET", "TOK_LINE", "TOK_RAW_TEXT", "$accept",
-  "CompilationUnit", "Block", "BlockEntry", "Heading", "Paragraph",
-  "BlockQuote", "UnorderedList", "OrderedList", "HorizontalLine", "Text",
-  "TextEntry", "SimpleText", "RawText", "BoldText", "ItalicText",
-  "StrongText", "InlineCode", YY_NULLPTR
+  "TOK_OPEN_ORDERED_LIST", "TOK_OPEN_URL", "TOK_CLOSE_BLOCKQUOTE",
+  "TOK_CLOSE_PARAGRAPH", "TOK_CLOSE_HEADING", "TOK_CLOSE_BOLD",
+  "TOK_CLOSE_ITALIC", "TOK_CLOSE_STRONG", "TOK_CLOSE_UNORDERED_LIST",
+  "TOK_CLOSE_ORDERED_LIST", "TOK_CLOSE_URL", "TOK_LINE", "TOK_RAW_TEXT",
+  "$accept", "CompilationUnit", "Block", "BlockEntry", "Heading",
+  "Paragraph", "BlockQuote", "UnorderedList", "OrderedList",
+  "HorizontalLine", "Text", "TextEntry", "InlineUrl", "SimpleText",
+  "RawText", "BoldText", "ItalicText", "StrongText", "InlineCode", YY_NULLPTR
 };
 #endif
 
@@ -651,10 +650,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -4
+#define YYPACT_NINF -22
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-4)))
+  (!!((Yystate) == (-22)))
 
 #define YYTABLE_NINF -1
 
@@ -665,11 +664,12 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      95,    95,    51,    51,    95,    95,    -4,     7,    95,    -4,
-      -4,    -4,    -4,    -4,    -4,    -4,    59,    -4,    -4,    51,
-      51,    51,    -4,    -3,    -4,    -4,    -4,    -4,    -4,    -4,
-      -4,     0,    72,    82,    -4,    -4,    -4,    18,    23,    30,
-      -4,    -4,    -4,    -4,    -4,    -4,    -4,    -4
+     121,   121,    76,    76,   121,   121,   -22,     1,   121,   -22,
+     -22,   -22,   -22,   -22,   -22,   -22,    85,   -22,   -22,    76,
+      76,    76,     7,   -22,     0,   -22,   -22,   -22,   -22,   -22,
+     -22,   -22,   -22,    17,    98,   108,   -22,   -22,   -22,    29,
+      48,    55,     7,   -22,   -22,   -22,   -22,   -22,   -22,   -22,
+     -22,   -21,   -22
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -678,24 +678,25 @@ static const yytype_int8 yypact[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     0,     0,     0,    16,     0,     2,     3,
-       5,     6,     7,     9,    10,     8,     0,    30,    25,     0,
-       0,     0,    26,     0,    17,    19,    20,    21,    22,    23,
-      24,     0,     0,     0,     1,     4,    13,     0,     0,     0,
-      12,    18,    11,    14,    15,    27,    28,    29
+       5,     6,     7,     9,    10,     8,     0,    32,    27,     0,
+       0,     0,     0,    28,     0,    17,    25,    19,    20,    21,
+      22,    23,    24,     0,     0,     0,     1,     4,    13,     0,
+       0,     0,     0,    12,    18,    11,    14,    15,    29,    30,
+      31,     0,    26
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -4,    -4,     1,    40,    -4,    -4,    -4,    -4,    -4,    -4,
-      81,    89,    -4,    -4,    -4,    -4,    -4,    -4
+     -22,   -22,     5,    -8,   -22,   -22,   -22,   -22,   -22,   -22,
+       4,    14,   -22,   -20,   -22,   -22,   -22,   -22,   -22
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
       -1,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      23,    24,    25,    26,    27,    28,    29,    30
+      24,    25,    26,    27,    28,    29,    30,    31,    32
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -703,36 +704,40 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      17,    18,    16,    17,    18,    32,    33,    34,     0,    19,
-      20,    21,    19,    20,    21,     0,    40,     0,     0,     0,
-      42,    17,    18,     0,     0,    22,    17,    18,    22,     0,
-      19,    20,    21,    17,    18,    19,    20,    21,     0,    45,
-       0,     0,    19,    20,    21,    46,    22,     0,    35,     0,
-       0,    22,     0,    47,    17,    18,    35,     0,    22,     0,
-       0,     0,     0,    19,    20,    21,     0,     0,     1,     2,
-       3,     0,    35,    35,     4,     5,     0,    36,     0,    22,
-       0,     1,     2,     3,    31,     0,     6,     4,     5,     0,
-       0,     1,     2,     3,     0,     0,    43,     4,     5,     6,
-      37,    38,    39,     0,     1,     2,     3,    44,     0,     6,
-       4,     5,    41,     0,     0,     0,     0,     0,     0,     0,
-      41,     0,     6,     0,     0,     0,    41,    41,    41
+      37,    36,    42,    17,    18,    52,    16,    33,    37,    34,
+      35,    18,    19,    20,    21,     0,     0,    22,     0,    43,
+      17,    18,    51,    39,    40,    41,    37,    37,    23,    19,
+      20,    21,    17,    18,    22,     0,     0,    45,    44,     0,
+       0,    19,    20,    21,     0,    23,    22,    44,     0,     0,
+      48,    17,    18,    44,    44,    44,     0,    23,    17,    18,
+      19,    20,    21,     0,     0,    22,     0,    19,    20,    21,
+      49,     0,    22,     0,     0,     0,    23,     0,    50,    17,
+      18,     0,     0,    23,     0,     0,     0,     0,    19,    20,
+      21,     0,     0,    22,     1,     2,     3,     0,     0,     0,
+       4,     5,     0,    38,    23,     0,     0,     1,     2,     3,
+       0,     0,     6,     4,     5,     0,     0,     1,     2,     3,
+       0,     0,    46,     4,     5,     6,     0,     0,     0,     0,
+       1,     2,     3,    47,     0,     6,     4,     5,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     6
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     1,     3,     4,     4,     5,     0,    -1,    12,
-      13,    14,    12,    13,    14,    -1,    19,    -1,    -1,    -1,
-      20,     3,     4,    -1,    -1,    28,     3,     4,    28,    -1,
-      12,    13,    14,     3,     4,    12,    13,    14,    -1,    21,
-      -1,    -1,    12,    13,    14,    22,    28,    -1,     8,    -1,
-      -1,    28,    -1,    23,     3,     4,    16,    -1,    28,    -1,
-      -1,    -1,    -1,    12,    13,    14,    -1,    -1,     9,    10,
-      11,    -1,    32,    33,    15,    16,    -1,    18,    -1,    28,
-      -1,     9,    10,    11,     3,    -1,    27,    15,    16,    -1,
-      -1,     9,    10,    11,    -1,    -1,    24,    15,    16,    27,
-      19,    20,    21,    -1,     9,    10,    11,    25,    -1,    27,
-      15,    16,    23,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      31,    -1,    27,    -1,    -1,    -1,    37,    38,    39
+       8,     0,    22,     3,     4,    26,     1,     3,    16,     4,
+       5,     4,    12,    13,    14,    -1,    -1,    17,    -1,    19,
+       3,     4,    42,    19,    20,    21,    34,    35,    28,    12,
+      13,    14,     3,     4,    17,    -1,    -1,    20,    24,    -1,
+      -1,    12,    13,    14,    -1,    28,    17,    33,    -1,    -1,
+      21,     3,     4,    39,    40,    41,    -1,    28,     3,     4,
+      12,    13,    14,    -1,    -1,    17,    -1,    12,    13,    14,
+      22,    -1,    17,    -1,    -1,    -1,    28,    -1,    23,     3,
+       4,    -1,    -1,    28,    -1,    -1,    -1,    -1,    12,    13,
+      14,    -1,    -1,    17,     9,    10,    11,    -1,    -1,    -1,
+      15,    16,    -1,    18,    28,    -1,    -1,     9,    10,    11,
+      -1,    -1,    27,    15,    16,    -1,    -1,     9,    10,    11,
+      -1,    -1,    24,    15,    16,    27,    -1,    -1,    -1,    -1,
+       9,    10,    11,    25,    -1,    27,    15,    16,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    27
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -741,9 +746,10 @@ static const yytype_uint8 yystos[] =
 {
        0,     9,    10,    11,    15,    16,    27,    30,    31,    32,
       33,    34,    35,    36,    37,    38,    31,     3,     4,    12,
-      13,    14,    28,    39,    40,    41,    42,    43,    44,    45,
-      46,    39,    31,    31,     0,    32,    18,    39,    39,    39,
-      19,    40,    20,    24,    25,    21,    22,    23
+      13,    14,    17,    28,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    39,    31,    31,     0,    32,    18,    39,
+      39,    39,    42,    19,    40,    20,    24,    25,    21,    22,
+      23,    42,    26
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -751,8 +757,8 @@ static const yytype_uint8 yyr1[] =
 {
        0,    29,    30,    31,    31,    32,    32,    32,    32,    32,
       32,    33,    34,    35,    36,    37,    38,    39,    39,    40,
-      40,    40,    40,    40,    40,    41,    42,    43,    44,    45,
-      46
+      40,    40,    40,    40,    40,    40,    41,    42,    43,    44,
+      45,    46,    47
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -760,8 +766,8 @@ static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     1,     2,     1,     1,     1,     1,     1,
        1,     3,     3,     3,     3,     3,     1,     1,     2,     1,
-       1,     1,     1,     1,     1,     1,     1,     3,     3,     3,
-       1
+       1,     1,     1,     1,     1,     1,     4,     1,     1,     3,
+       3,     3,     1
 };
 
 
@@ -1446,101 +1452,107 @@ yyreduce:
         case 3:
 #line 224 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_BLOCK, 1); }
-#line 1450 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1456 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 4:
 #line 226 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(0, 1); }
-#line 1456 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1462 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 240 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_HEADING; std::cout << "@@@ HEADING\n"; }
-#line 1462 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1468 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 245 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_PARAGRAPH; std::cout << "@@@ PARAGRAPH\n"; }
-#line 1468 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1474 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 250 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_BLOCKQUOTE; }
-#line 1474 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1480 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 14:
 #line 255 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_UNORDERED_LIST; }
-#line 1480 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1486 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 15:
 #line 260 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_ORDERED_LIST; }
-#line 1486 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1492 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 16:
 #line 265 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { PUSH(NTY_LINE, (yyvsp[0].node)); }
-#line 1492 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1498 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 17:
 #line 271 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_BLOCK, 1); }
-#line 1498 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1504 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 18:
 #line 273 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(0, 1); }
-#line 1504 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
-    break;
-
-  case 25:
-#line 287 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_TEXT, (yyvsp[0].node)); }
 #line 1510 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 292 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_RAW_TEXT, (yyvsp[0].node)); }
+#line 288 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { COMBINE(NTY_INLINE_URL, 2); }
 #line 1516 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 297 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { TOP()->type = NTY_BOLD; }
+#line 293 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH(NTY_TEXT, (yyvsp[0].node)); }
 #line 1522 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 302 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { TOP()->type = NTY_ITALIC; }
+#line 298 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH(NTY_RAW_TEXT, (yyvsp[0].node)); }
 #line 1528 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 307 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { TOP()->type = NTY_STRONG; }
+#line 303 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { TOP()->type = NTY_BOLD; }
 #line 1534 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 312 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_TEXT, (yyvsp[0].node)); COMBINE(NTY_CODE, 1); }
+#line 308 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { TOP()->type = NTY_ITALIC; }
 #line 1540 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
+  case 31:
+#line 313 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { TOP()->type = NTY_STRONG; }
+#line 1546 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+    break;
 
-#line 1544 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+  case 32:
+#line 318 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH(NTY_TEXT, (yyvsp[0].node)); COMBINE(NTY_CODE, 1); }
+#line 1552 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+    break;
+
+
+#line 1556 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1768,7 +1780,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 315 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1906  */
+#line 321 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1906  */
 
 
 const char *markdowntown_get_token_name( int tok )

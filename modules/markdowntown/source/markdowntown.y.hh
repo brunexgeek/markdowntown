@@ -105,7 +105,7 @@ const char *markdowntown_get_token_name( int tok );
     TOK_OPEN_STRONG = 269,
     TOK_OPEN_UNORDERED_LIST = 270,
     TOK_OPEN_ORDERED_LIST = 271,
-    TOK_OPEN_SQUARE_BRACKET = 272,
+    TOK_OPEN_URL = 272,
     TOK_CLOSE_BLOCKQUOTE = 273,
     TOK_CLOSE_PARAGRAPH = 274,
     TOK_CLOSE_HEADING = 275,
@@ -114,7 +114,7 @@ const char *markdowntown_get_token_name( int tok );
     TOK_CLOSE_STRONG = 278,
     TOK_CLOSE_UNORDERED_LIST = 279,
     TOK_CLOSE_ORDERED_LIST = 280,
-    TOK_CLOSE_SQUARE_BRACKET = 281,
+    TOK_CLOSE_URL = 281,
     TOK_LINE = 282,
     TOK_RAW_TEXT = 283
   };

@@ -209,16 +209,16 @@ HEADING                 "="+" "
 BLOCKQUOTE              ">"+" "
 
 TEXT                    [^=\[\]\{\};:'`\2\n]+
+URL                     [^ \n\t()\[\]\{\}'"]+
 
 ITALIC                  "''"
 BOLD                    "'''"
 STRONG                  "'''''"
 
-
-
 %x PENDING
 %x OPEN
 %x CONTENT
+%x URL
 
 %%
 
@@ -329,12 +329,22 @@ STRONG                  "'''''"
 }
 
 
-<CONTENT>"[" {
-	EMIT(TOK_OPEN_SQUARE_BRACKET);
+<CONTENT>"["{OWS}/{TEXT}{OWS}"]"{OWS}"("{OWS}{URL}{OWS}")" {
+	EMIT(TOK_OPEN_URL);
+	BEGIN(URL);
 }
 
-<CONTENT>"]" {
-	EMIT(TOK_CLOSE_SQUARE_BRACKET);
+<URL>{TEXT}/{OWS}"]" {
+	EMIT(TOK_TEXT);
+}
+
+<URL>{URL}/{OWS}")" {
+	EMIT(TOK_TEXT);
+}
+
+<URL>")" {
+	EMIT(TOK_CLOSE_URL);
+	BEGIN(CONTENT);
 }
 
 

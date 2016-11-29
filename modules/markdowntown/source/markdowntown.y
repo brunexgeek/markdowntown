@@ -195,7 +195,7 @@ static void markdowntown_push(
 %token <node> TOK_OPEN_STRONG
 %token <node> TOK_OPEN_UNORDERED_LIST
 %token <node> TOK_OPEN_ORDERED_LIST
-%token <node> TOK_OPEN_SQUARE_BRACKET
+%token <node> TOK_OPEN_URL
 %token <node> TOK_CLOSE_BLOCKQUOTE
 %token <node> TOK_CLOSE_PARAGRAPH
 %token <node> TOK_CLOSE_HEADING
@@ -204,7 +204,7 @@ static void markdowntown_push(
 %token <node> TOK_CLOSE_STRONG
 %token <node> TOK_CLOSE_UNORDERED_LIST
 %token <node> TOK_CLOSE_ORDERED_LIST
-%token <node> TOK_CLOSE_SQUARE_BRACKET
+%token <node> TOK_CLOSE_URL
 %token <node> TOK_LINE
 %token <node> TOK_RAW_TEXT
 
@@ -280,6 +280,12 @@ TextEntry:
 	| ItalicText
 	| StrongText
 	| InlineCode
+	| InlineUrl
+	;
+
+InlineUrl:
+	TOK_OPEN_URL SimpleText SimpleText TOK_CLOSE_URL
+	{ COMBINE(NTY_INLINE_URL, 2); }
 	;
 
 SimpleText:

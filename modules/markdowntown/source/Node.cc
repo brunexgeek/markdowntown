@@ -28,6 +28,7 @@ static const char * NODE_TYPES[] =
 	"RAW_TEXT",
 	"UNORDERED_LIST",
 	"ORDERED_LIST",
+	"INLINE_URL",
 	"NULL"
 };
 

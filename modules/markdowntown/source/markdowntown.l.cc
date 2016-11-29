@@ -448,8 +448,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	yyg->yy_c_buf_p = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 22
-#define YY_END_OF_BUFFER 23
+#define YY_NUM_RULES 24
+#define YY_END_OF_BUFFER 25
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -457,14 +457,29 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[60] =
+static yyconst flex_int16_t yy_acclist[77] =
     {   0,
-        0,    0,    0,    0,    0,    0,    0,    0,   23,   22,
-        2,    3,    9,    9,   10,    9,    9,    9,    9,    9,
-       20,   21,   11,   21,   21,   12,   13,   21,   21,    0,
-        1,    0,    0,    8,    0,    7,    0,    0,    5,    0,
-        4,    0,   20,   16,    0,   17,    0,    0,   18,    0,
-        0,   15,   19,    0,    0,    0,    6,   14,    0
+       25,   24,    2,   24,    3,   24,    9,   24,    9,   24,
+       10,   24,    9,   24,    9,   24,    9,   24,    9,   24,
+        9,   24,   22,   23,   24,   23,   24,   11,   24,   23,
+       24,   23,   24,   23,   24,16396,   23,   24,   23,   24,
+       24,16397,16398,   24,16398,   24,16397,   15,   24,16397,
+        1,    8,    7,    5,    4,   22,   18,   19,16396,   20,
+    16397,16398,16398,16397,16397, 8206,16397, 8205, 8206,16397,
+       17,16396,   21,    6,   16, 8204
+    } ;
+
+static yyconst flex_int16_t yy_accept[86] =
+    {   0,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    2,    3,    5,    7,    9,   11,   13,   15,   17,
+       19,   21,   23,   26,   28,   30,   32,   34,   37,   39,
+       41,   44,   46,   48,   51,   51,   52,   52,   52,   53,
+       53,   54,   54,   54,   55,   55,   56,   56,   57,   58,
+       58,   59,   59,   59,   60,   60,   61,   61,   63,   64,
+       65,   66,   68,   69,   69,   70,   71,   71,   72,   72,
+       72,   73,   74,   74,   74,   74,   74,   74,   75,   76,
+       76,   76,   76,   77,   77
     } ;
 
 static yyconst YY_CHAR yy_ec[256] =
@@ -472,17 +487,17 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    2,    1,    1,    1,    1,    1,    1,    3,    4,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    5,    1,    1,    6,    1,    1,    1,    7,    1,
-        1,    8,    1,    1,    9,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,   10,   10,    1,
-       11,   12,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    5,    1,    6,    7,    1,    1,    1,    8,    9,
+       10,   11,    1,    1,   12,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,   13,   13,    1,
+       14,   15,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       13,    1,   14,    1,    1,   15,    1,    1,    1,    1,
+       16,    1,   17,    1,    1,   18,    1,    1,    1,    1,
 
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,   16,    1,   10,    1,    1,    1,    1,    1,
+        1,    1,   19,    1,   20,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -499,79 +514,128 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst YY_CHAR yy_meta[17] =
+static yyconst YY_CHAR yy_meta[21] =
     {   0,
-        1,    2,    3,    4,    3,    1,    2,    1,    5,    2,
-        2,    1,    2,    2,    2,    2
+        1,    2,    3,    4,    3,    5,    1,    6,    7,    8,
+        1,    9,    2,    2,    1,    6,   10,    2,    6,    6
     } ;
 
-static yyconst flex_uint16_t yy_base[65] =
+static yyconst flex_uint16_t yy_base[98] =
     {   0,
-       94,   93,   90,   89,    0,    0,   16,    0,   92,   97,
-       87,   97,   97,   81,   97,   28,   30,   80,   31,   32,
-        0,   97,   97,   81,   42,   97,   97,   72,   70,   81,
-       97,   69,   67,   97,   34,   97,   43,   64,   97,   38,
-       97,   45,    0,   56,   51,   97,    0,   46,   97,   40,
-       46,   47,   97,   55,   45,   32,   97,   97,   97,   64,
-       67,   69,   74,   79
+      203,  202,  199,  198,    0,   13,   28,    0,   48,    0,
+      185,  244,  179,  244,  244,  169,  244,    1,    8,  164,
+       64,   65,    0,  244,  244,  166,   78,   18,  154,  150,
+       92,   69,   68,   72,  164,  244,  155,  154,  244,   79,
+      244,   85,  153,  244,   86,  244,  103,    0,  129,  114,
+      244,    0,  108,  109,  106,  244,  104,    0,  112,  116,
+        0,    0,  244,  110,  244,    0,  104,   80,    0,   78,
+      124,  244,  127,   68,   17,  130,   10,  244,  244,  131,
+      135,    0,  244,  244,  141,  151,  159,  161,  170,  179,
+      188,  198,  207,  215,  221,  228,  235
+
     } ;
 
-static yyconst flex_int16_t yy_def[65] =
+static yyconst flex_int16_t yy_def[98] =
     {   0,
-       60,   60,   60,   60,   59,    5,   59,    7,   59,   59,
-       61,   59,   59,   62,   59,   59,   59,   59,   59,   59,
-       63,   59,   59,   59,   59,   59,   59,   64,   59,   61,
-       59,   62,   59,   59,   59,   59,   59,   59,   59,   59,
-       59,   59,   63,   59,   25,   59,   25,   64,   59,   59,
-       59,   59,   59,   59,   59,   54,   59,   59,    0,   59,
-       59,   59,   59,   59
+       85,   85,   85,   85,   86,   86,   84,    7,   84,    9,
+       84,   84,   87,   84,   84,   88,   84,   84,   84,   84,
+       84,   84,   89,   84,   84,   84,   84,   90,   91,   84,
+       84,   92,   93,   93,   87,   84,   88,   84,   84,   84,
+       84,   84,   84,   84,   84,   84,   84,   89,   84,   27,
+       84,   27,   90,   53,   91,   84,   84,   31,   92,   34,
+       34,   34,   84,   94,   84,   34,   84,   84,   53,   95,
+       53,   84,   84,   84,   95,   96,   73,   84,   84,   96,
+       96,   97,   84,    0,   84,   84,   84,   84,   84,   84,
+       84,   84,   84,   84,   84,   84,   84
+
     } ;
 
-static yyconst flex_uint16_t yy_nxt[114] =
+static yyconst flex_uint16_t yy_nxt[265] =
     {   0,
-       13,   13,   14,   15,   14,   16,   13,   17,   18,   13,
-       19,   20,   13,   13,   13,   13,   21,   22,   21,   23,
-       21,   21,   24,   21,   21,   22,   25,   21,   26,   27,
-       28,   29,   34,   35,   36,   39,   41,   37,   34,   35,
-       59,   40,   39,   42,   45,   46,   45,   36,   40,   41,
-       37,   58,   47,   55,   54,   53,   42,   56,   57,   56,
-       49,   59,   52,   54,   10,   10,   10,   10,   10,   30,
-       30,   32,   51,   32,   43,   38,   43,   33,   43,   48,
-       48,   48,   48,   48,   31,   50,   49,   44,   38,   33,
-       31,   59,   12,   12,   11,   11,    9,   59,   59,   59,
+       84,   84,   16,   17,   16,   39,   18,   40,   84,   83,
+       19,   20,   41,   21,   22,   16,   17,   16,   42,   18,
+       54,   84,   54,   19,   20,   76,   21,   22,   23,   24,
+       23,   25,   23,   23,   23,   26,   23,   23,   23,   23,
+       24,   27,   23,   28,   24,   29,   30,   24,   31,   32,
+       33,   12,   33,   33,   31,   12,   33,   34,   31,   31,
+       32,   32,   31,   12,   12,   32,   12,   12,   44,   46,
+       66,   64,   66,   64,   66,   79,   66,   45,   65,   47,
+       50,   51,   50,   39,   63,   40,   76,   74,   63,   41,
+       44,   52,   58,   59,   60,   42,   60,   61,   58,   45,
 
-       59,   59,   59,   59,   59,   59,   59,   59,   59,   59,
-       59,   59,   59
+       61,   62,   58,   58,   59,   59,   58,   46,   63,   59,
+       69,   71,   69,   71,   64,   73,   64,   47,   60,   65,
+       60,   65,   72,   56,   70,   62,   71,   84,   71,   77,
+       78,   77,   81,   82,   81,   82,   68,   81,   73,   81,
+       83,   12,   12,   12,   12,   12,   12,   12,   12,   12,
+       12,   15,   15,   15,   15,   15,   15,   15,   15,   15,
+       15,   35,   35,   37,   67,   43,   38,   36,   57,   37,
+       48,   56,   48,   49,   48,   43,   48,   48,   48,   53,
+       38,   53,   36,   53,   84,   53,   53,   53,   55,   55,
+       55,   55,   55,   55,   55,   55,   55,   55,   59,   59,
+
+       59,   14,   14,   13,   13,   59,   59,   61,   84,   61,
+       84,   61,   84,   61,   61,   61,   61,   64,   84,   84,
+       84,   84,   64,   75,   84,   84,   84,   75,   80,   80,
+       80,   84,   84,   84,   84,   84,   80,   82,   84,   84,
+       84,   84,   82,   11,   84,   84,   84,   84,   84,   84,
+       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
+       84,   84,   84,   84
     } ;
 
-static yyconst flex_int16_t yy_chk[114] =
+static yyconst flex_int16_t yy_chk[265] =
     {   0,
-        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    7,    7,    7,    7,
+        0,    0,    5,    5,    5,   18,    5,   18,    0,   82,
+        5,    5,   19,    5,    5,    6,    6,    6,   19,    6,
+       28,   77,   28,    6,    6,   75,    6,    6,    7,    7,
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,   16,   16,   17,   19,   20,   17,   35,   35,
-       56,   19,   40,   20,   25,   25,   25,   37,   40,   42,
-       37,   55,   25,   52,   51,   50,   42,   54,   54,   54,
-       48,   45,   44,   54,   60,   60,   60,   60,   60,   61,
-       61,   62,   38,   62,   63,   33,   63,   32,   63,   64,
-       64,   64,   64,   64,   30,   29,   28,   24,   18,   14,
-       11,    9,    4,    3,    2,    1,   59,   59,   59,   59,
+        7,    7,    7,    7,    7,    7,    7,    7,    9,    9,
+        9,    9,    9,    9,    9,    9,    9,    9,    9,    9,
+        9,    9,    9,    9,    9,    9,    9,    9,   21,   22,
+       33,   32,   33,   32,   34,   74,   34,   21,   32,   22,
+       27,   27,   27,   40,   33,   40,   70,   68,   34,   42,
+       45,   27,   31,   31,   31,   42,   31,   31,   31,   45,
 
-       59,   59,   59,   59,   59,   59,   59,   59,   59,   59,
-       59,   59,   59
+       31,   31,   31,   31,   31,   31,   31,   47,   31,   31,
+       53,   54,   53,   54,   59,   67,   59,   47,   60,   64,
+       60,   59,   57,   55,   53,   60,   71,   50,   71,   73,
+       73,   73,   76,   80,   76,   80,   49,   81,   73,   81,
+       80,   85,   85,   85,   85,   85,   85,   85,   85,   85,
+       85,   86,   86,   86,   86,   86,   86,   86,   86,   86,
+       86,   87,   87,   88,   43,   38,   37,   35,   30,   88,
+       89,   29,   89,   26,   89,   20,   89,   89,   89,   90,
+       16,   90,   13,   90,   11,   90,   90,   90,   91,   91,
+       91,   91,   91,   91,   91,   91,   91,   91,   92,   92,
+
+       92,    4,    3,    2,    1,   92,   92,   93,    0,   93,
+        0,   93,    0,   93,   93,   93,   93,   94,    0,    0,
+        0,    0,   94,   95,    0,    0,    0,   95,   96,   96,
+       96,    0,    0,    0,    0,    0,   96,   97,    0,    0,
+        0,    0,   97,   84,   84,   84,   84,   84,   84,   84,
+       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
+       84,   84,   84,   84
     } ;
 
-static yyconst flex_int16_t yy_rule_linenum[22] =
+static yyconst flex_int16_t yy_rule_linenum[24] =
     {   0,
       226,  232,  237,  255,  263,  269,  276,  285,  297,  324,
-      325,  332,  336,  341,  342,  343,  346,  350,  351,  375,
-      377
+      325,  332,  337,  341,  345,  351,  352,  353,  356,  360,
+      361,  385,  387
     } ;
 
-/* The intent behind this definition is that it'll catch
- * any uses of REJECT which flex missed.
- */
-#define REJECT reject_used_but_not_detected
+#define YY_TRAILING_MASK 0x2000
+#define YY_TRAILING_HEAD_MASK 0x4000
+#define REJECT \
+{ \
+*yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */ \
+yy_cp = yyg->yy_full_match; /* restore poss. backed-over text */ \
+yyg->yy_lp = yyg->yy_full_lp; /* restore orig. accepting pos. */ \
+yyg->yy_state_ptr = yyg->yy_full_state; /* restore orig. state */ \
+yy_current_state = *yyg->yy_state_ptr; /* restore curr. state */ \
+++yyg->yy_lp; \
+goto find_rule; \
+}
+
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
@@ -769,12 +833,14 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 
 
 
-#line 773 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+
+#line 838 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 #define INITIAL 0
 #define PENDING 1
 #define OPEN 2
 #define CONTENT 3
+#define URL 4
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -822,6 +888,17 @@ struct yyguts_t
 
     int yylineno_r;
     int yy_flex_debug_r;
+
+    yy_state_type *yy_state_buf;
+    yy_state_type *yy_state_ptr;
+    char *yy_full_match;
+    int yy_lp;
+
+    /* These are only needed for trailing context rules,
+     * but there's no conditional variable for that yet. */
+    int yy_looking_for_trail_begin;
+    int yy_full_lp;
+    int *yy_full_state;
 
     char *yytext_r;
     int yy_more_flag;
@@ -1091,6 +1168,12 @@ YY_DECL
 		YY_USER_INIT;
 #endif
 
+        /* Create the reject buffer large enough to save one state per allowed character. */
+        if ( ! yyg->yy_state_buf )
+            yyg->yy_state_buf = (yy_state_type *)markdowntown_alloc(YY_STATE_BUF_SIZE  ,yyscanner);
+            if ( ! yyg->yy_state_buf )
+                YY_FATAL_ERROR( "out of dynamic memory in markdowntown_lex()" );
+
 		if ( ! yyg->yy_start )
 			yyg->yy_start = 1;	/* first start state */
 
@@ -1123,7 +1206,7 @@ YY_DECL
 
 
 
-#line 1127 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 1210 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1140,31 +1223,65 @@ YY_DECL
 
 /* %% [9.0] code to set up and find next match goes here */
 		yy_current_state = yyg->yy_start;
+
+		yyg->yy_state_ptr = yyg->yy_state_buf;
+		*yyg->yy_state_ptr++ = yy_current_state;
+
 yy_match:
 		do
 			{
 			YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
-			if ( yy_accept[yy_current_state] )
-				{
-				yyg->yy_last_accepting_state = yy_current_state;
-				yyg->yy_last_accepting_cpos = yy_cp;
-				}
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 60 )
+				if ( yy_current_state >= 85 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+			*yyg->yy_state_ptr++ = yy_current_state;
 			++yy_cp;
 			}
-		while ( yy_current_state != 59 );
-		yy_cp = yyg->yy_last_accepting_cpos;
-		yy_current_state = yyg->yy_last_accepting_state;
+		while ( yy_current_state != 84 );
 
 yy_find_action:
 /* %% [10.0] code to find the action number goes here */
-		yy_act = yy_accept[yy_current_state];
+		yy_current_state = *--yyg->yy_state_ptr;
+		yyg->yy_lp = yy_accept[yy_current_state];
+find_rule: /* we branch to this label when backing up */
+		for ( ; ; ) /* until we find what rule we matched */
+			{
+			if ( yyg->yy_lp && yyg->yy_lp < yy_accept[yy_current_state + 1] )
+				{
+				yy_act = yy_acclist[yyg->yy_lp];
+				if ( yy_act & YY_TRAILING_HEAD_MASK ||
+				     yyg->yy_looking_for_trail_begin )
+					{
+					if ( yy_act == yyg->yy_looking_for_trail_begin )
+						{
+						yyg->yy_looking_for_trail_begin = 0;
+						yy_act &= ~YY_TRAILING_HEAD_MASK;
+						break;
+						}
+					}
+				else if ( yy_act & YY_TRAILING_MASK )
+					{
+					yyg->yy_looking_for_trail_begin = yy_act & ~YY_TRAILING_MASK;
+					yyg->yy_looking_for_trail_begin |= YY_TRAILING_HEAD_MASK;
+					}
+				else
+					{
+					yyg->yy_full_match = yy_cp;
+					yyg->yy_full_state = yyg->yy_state_ptr;
+					yyg->yy_full_lp = yyg->yy_lp;
+					break;
+					}
+				++yyg->yy_lp;
+				goto find_rule;
+				}
+			--yy_cp;
+			yy_current_state = *--yyg->yy_state_ptr;
+			yyg->yy_lp = yy_accept[yy_current_state];
+			}
 
 		YY_DO_BEFORE_ACTION;
 
@@ -1177,13 +1294,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 22 )
+			else if ( yy_act < 24 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 22 )
+			else if ( yy_act == 24 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 23 )
+			else if ( yy_act == 25 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -1192,13 +1309,6 @@ do_action:	/* This label is used only to access EOF actions. */
 		switch ( yy_act )
 	{ /* beginning of action switch */
 /* %% [13.0] actions go here */
-			case 0: /* must back up */
-			/* undo the effects of YY_DO_BEFORE_ACTION */
-			*yy_cp = yyg->yy_hold_char;
-			yy_cp = yyg->yy_last_accepting_cpos;
-			yy_current_state = yyg->yy_last_accepting_state;
-			goto yy_find_action;
-
 case 1:
 /* rule 1 can match eol */
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
@@ -1310,6 +1420,7 @@ case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(PENDING):
 case YY_STATE_EOF(OPEN):
 case YY_STATE_EOF(CONTENT):
+case YY_STATE_EOF(URL):
 #line 304 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	if (!pending.hasNext())
@@ -1347,52 +1458,68 @@ case 12:
 YY_RULE_SETUP
 #line 332 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
-	EMIT(TOK_OPEN_SQUARE_BRACKET);
+	EMIT(TOK_OPEN_URL);
+	BEGIN(URL);
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 336 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 337 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
-	EMIT(TOK_CLOSE_SQUARE_BRACKET);
+	EMIT(TOK_TEXT);
 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 341 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT_TOGGLE(statements[STATE_STRONG], TOK_OPEN_STRONG, TOK_CLOSE_STRONG ); }
+{
+	EMIT(TOK_TEXT);
+}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 342 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT_TOGGLE(statements[STATE_BOLD],   TOK_OPEN_BOLD,   TOK_CLOSE_BOLD   ); }
+#line 345 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{
+	EMIT(TOK_CLOSE_URL);
+	BEGIN(CONTENT);
+}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 343 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT_TOGGLE(statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
+#line 351 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT_TOGGLE(statements[STATE_STRONG], TOK_OPEN_STRONG, TOK_CLOSE_STRONG ); }
 	YY_BREAK
 case 17:
-/* rule 17 can match eol */
+YY_RULE_SETUP
+#line 352 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT_TOGGLE(statements[STATE_BOLD],   TOK_OPEN_BOLD,   TOK_CLOSE_BOLD   ); }
+	YY_BREAK
+case 18:
+YY_RULE_SETUP
+#line 353 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT_TOGGLE(statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
+	YY_BREAK
+case 19:
+/* rule 19 can match eol */
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
 YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 346 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 356 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	/* ignores the heading close */
 }
 	YY_BREAK
-case 18:
-/* rule 18 can match eol */
+case 20:
+/* rule 20 can match eol */
 YY_RULE_SETUP
-#line 350 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 360 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 { EMIT(TOK_CODE); }
 	YY_BREAK
-case 19:
+case 21:
 YY_RULE_SETUP
-#line 351 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 361 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	int count = 0;
 	int current = 0;
@@ -1417,22 +1544,22 @@ YY_RULE_SETUP
 	}
 }
 	YY_BREAK
-case 20:
-YY_RULE_SETUP
-#line 375 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT(TOK_TEXT); }
-	YY_BREAK
-case 21:
-YY_RULE_SETUP
-#line 377 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT(TOK_TEXT); }
-	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 379 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 385 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT(TOK_TEXT); }
+	YY_BREAK
+case 23:
+YY_RULE_SETUP
+#line 387 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT(TOK_TEXT); }
+	YY_BREAK
+case 24:
+YY_RULE_SETUP
+#line 389 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 ECHO;
 	YY_BREAK
-#line 1436 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 1563 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1502,8 +1629,7 @@ ECHO;
 			else
 				{
 /* %% [14.0] code to do back-up for compressed tables and set up yy_cp goes here */
-				yy_cp = yyg->yy_last_accepting_cpos;
-				yy_current_state = yyg->yy_last_accepting_state;
+				yy_cp = yyg->yy_c_buf_p;
 				goto yy_find_action;
 				}
 			}
@@ -1642,37 +1768,8 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 
-			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
-
-			int yy_c_buf_p_offset =
-				(int) (yyg->yy_c_buf_p - b->yy_ch_buf);
-
-			if ( b->yy_is_our_buffer )
-				{
-				yy_size_t new_size = b->yy_buf_size * 2;
-
-				if ( new_size <= 0 )
-					b->yy_buf_size += b->yy_buf_size / 8;
-				else
-					b->yy_buf_size *= 2;
-
-				b->yy_ch_buf = (char *)
-					/* Include room in for 2 EOB chars. */
-					markdowntown_realloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
-				}
-			else
-				/* Can't grow it, we don't own it. */
-				b->yy_ch_buf = 0;
-
-			if ( ! b->yy_ch_buf )
-				YY_FATAL_ERROR(
-				"fatal error - scanner input buffer overflow" );
-
-			yyg->yy_c_buf_p = &b->yy_ch_buf[yy_c_buf_p_offset];
-
-			num_to_read = YY_CURRENT_BUFFER_LVALUE->yy_buf_size -
-						number_to_move - 1;
+			YY_FATAL_ERROR(
+"input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 
 			}
 
@@ -1739,22 +1836,21 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 /* %% [15.0] code to get the start state into yy_current_state goes here */
 	yy_current_state = yyg->yy_start;
 
+	yyg->yy_state_ptr = yyg->yy_state_buf;
+	*yyg->yy_state_ptr++ = yy_current_state;
+
 	for ( yy_cp = yyg->yytext_ptr + YY_MORE_ADJ; yy_cp < yyg->yy_c_buf_p; ++yy_cp )
 		{
 /* %% [16.0] code to find the next state goes here */
 		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
-		if ( yy_accept[yy_current_state] )
-			{
-			yyg->yy_last_accepting_state = yy_current_state;
-			yyg->yy_last_accepting_cpos = yy_cp;
-			}
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 60 )
+			if ( yy_current_state >= 85 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+		*yyg->yy_state_ptr++ = yy_current_state;
 		}
 
 	return yy_current_state;
@@ -1774,22 +1870,18 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	int yy_is_jam;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner; /* This var may be unused depending upon options. */
 /* %% [17.0] code to find the next state, and perhaps do backing up, goes here */
-	char *yy_cp = yyg->yy_c_buf_p;
 
 	YY_CHAR yy_c = 1;
-	if ( yy_accept[yy_current_state] )
-		{
-		yyg->yy_last_accepting_state = yy_current_state;
-		yyg->yy_last_accepting_cpos = yy_cp;
-		}
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 60 )
+		if ( yy_current_state >= 85 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 59);
+	yy_is_jam = (yy_current_state == 84);
+	if ( ! yy_is_jam )
+		*yyg->yy_state_ptr++ = yy_current_state;
 
 	(void)yyg;
 	return yy_is_jam ? 0 : yy_current_state;
@@ -2649,6 +2741,11 @@ static int yy_init_globals (yyscan_t yyscanner)
     yyg->yy_start_stack_depth = 0;
     yyg->yy_start_stack =  NULL;
 
+    yyg->yy_state_buf = 0;
+    yyg->yy_state_ptr = 0;
+    yyg->yy_full_match = 0;
+    yyg->yy_lp = 0;
+
 /* Defined in main.c */
 #ifdef YY_STDINIT
     yyin = stdin;
@@ -2685,6 +2782,9 @@ int markdowntown_lex_destroy  (yyscan_t yyscanner)
     /* Destroy the start condition stack. */
         markdowntown_free(yyg->yy_start_stack ,yyscanner );
         yyg->yy_start_stack = NULL;
+
+    markdowntown_free ( yyg->yy_state_buf , yyscanner);
+    yyg->yy_state_buf  = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
      * markdowntown_lex() is called, initialization will occur. */
@@ -2762,4 +2862,4 @@ void markdowntown_free (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 379 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 389 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"

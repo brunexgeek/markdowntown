@@ -57,6 +57,7 @@ void tokens(
 			case TOK_CLOSE_HEADING:
 			case TOK_CLOSE_UNORDERED_LIST:
 			case TOK_CLOSE_ORDERED_LIST:
+			case TOK_CLOSE_URL:
 				indent--;
 				break;
 		}
@@ -84,6 +85,7 @@ void tokens(
 			case TOK_OPEN_HEADING:
 			case TOK_OPEN_UNORDERED_LIST:
 			case TOK_OPEN_ORDERED_LIST:
+			case TOK_OPEN_URL:
 				indent++;
 				break;
 		}
