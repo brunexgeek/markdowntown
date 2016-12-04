@@ -1,15 +1,28 @@
 #include <fstream>
 #include "markdowntown.y.hh"
 #include "markdowntown.l.hh"
-#include <markdowntown/Node.hh>
-
+#include <markdowntown/Compiler.hh>
 
 void markdowntown_set_column (int  column_no , yyscan_t yyscanner);
 
 
-void *getScanString(
-    void *scanner,
-    std::istream &in )
+namespace markdowntown {
+
+
+Compiler::Compiler()
+{
+
+}
+
+
+Compiler::~Compiler()
+{
+
+}
+
+
+void Compiler::setContent(
+	std::istream &in )
 {
 	std::stringstream ss;
 	std::string line;
@@ -23,28 +36,30 @@ void *getScanString(
 		ss << '\n';
 	}
 
-	return markdowntown__scan_string(ss.str().c_str(), scanner);
+	content = ss.str();
 }
 
 
-void tokens(
-	std::istream &in,
-	const std::string &fileName )
+void Compiler::printTokens(
+	std::ostream &out )
 {
+	int tok = 0;
+	int indent = 0;
 	YYSTYPE temp;
-	void *scanner;
-	void *scanString;
+	void *scanner = NULL;
+	void *scanString = NULL;
 
 	// initialize the lexer
 	markdowntown_lex_init(&scanner);
-	scanString = getScanString(scanner, in);
+	if (scanner == NULL) return;
+	scanString = markdowntown__scan_string(content.c_str(), scanner);
+	if (scanString == NULL) goto ESCAPE;
 	markdowntown_set_lineno(1, scanner);
 	markdowntown_set_column(1, scanner);
 	markdowntown_set_debug(0, scanner);
 
-	temp.node = 0;
-	int tok;
-	int indent = 0;
+	// print each token found
+	temp.text = 0;
 	while ((tok = markdowntown_lex(&temp, scanner)) != 0)
 	{
 		switch (tok)
@@ -62,17 +77,19 @@ void tokens(
 				break;
 		}
 
+		// prints the indentation
 		for (int i = 0; i < indent; ++i)
-			std::cout << "   ";
+			out << "   ";
 
+		// prints the token information
 		if (tok == TOK_TEXT || tok == TOK_RAW_TEXT)
 		{
-			std::cout << "'" << temp.node << "'" << std::endl;
+			out << "'" << temp.text << "'" << std::endl;
 		}
 		else
 		{
-			std::cout << markdowntown_get_token_name(tok) << std::endl;
-			temp.node = 0;
+			out << markdowntown_get_token_name(tok) << std::endl;
+			temp.text = 0;
 		}
 
 		switch (tok)
@@ -91,42 +108,46 @@ void tokens(
 		}
 	}
 
-	if (scanString != NULL)
-		markdowntown__delete_buffer((YY_BUFFER_STATE)scanString, scanner);
+	markdowntown__delete_buffer((YY_BUFFER_STATE)scanString, scanner);
+ESCAPE:
 	markdowntown_lex_destroy(scanner);
 }
 
 
-int main( int argc, char **argv )
+void Compiler::parse()
 {
-#if (1)
 	void *scanner;
 	void *scanString;
+	parser_context_t context;
 
+	// initializes the lexer
 	markdowntown_lex_init(&scanner);
-	scanString = getScanString(scanner, std::cin);
+	if (scanner == NULL) return;
+	scanString = markdowntown__scan_string(content.c_str(), scanner);
+	if (scanString == NULL) goto ESCAPE;
 	markdowntown_set_lineno(1, scanner);
 	markdowntown_set_column(1, scanner);
 	markdowntown_set_debug(1, scanner);
 
-	parser_context_t context;
+	// initializes the parser
 	context.lexer = scanner;
 	context.fileName = "bla";
-	context.rule = NULL;
 
+	// parses the input text generating the AST
 	markdowntown_parse(&context);
 
 	if (!context.stack.empty())
 	{
-		markdowntown::Node *root = context.stack[0];
+		root = context.stack[0];
 		root->print(std::cout, markdowntown::Node::name);
 	}
+	else
+		root = NULL;
 
-	if (scanString != NULL)
-		markdowntown__delete_buffer((YY_BUFFER_STATE)scanString, scanner);
+	markdowntown__delete_buffer((YY_BUFFER_STATE)scanString, scanner);
+ESCAPE:
 	markdowntown_lex_destroy(scanner);
-#else
-	tokens(std::cin, "");
-#endif
-	return 0;
+}
+
+
 }

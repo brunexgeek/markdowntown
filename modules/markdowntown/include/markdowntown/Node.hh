@@ -43,12 +43,6 @@ class Node
 		Node(
 			int type,
 			const char *text = NULL);
-		/*Node(
-			int type,
-			const char *value,
-			Node *parent,
-			int childNo,
-			... );*/
 
 		Node(
 			const Node &obj );

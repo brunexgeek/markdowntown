@@ -473,7 +473,7 @@ extern int markdowntown_lex \
 #undef YY_DECL
 #endif
 
-#line 389 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 395 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 
 #line 479 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.hh"
 #undef markdowntown_IN_HEADER

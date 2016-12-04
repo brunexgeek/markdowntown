@@ -206,7 +206,9 @@ OWS                     {WS}*
 UNORDERED_LIST          "*"+" "
 ORDERED_LIST            "#"+" "
 HEADING                 "="+" "
+
 BLOCKQUOTE              ">"+" "
+EMPTY_BLOCKQUOTE        ">"/{EOL}
 
 TEXT                    [^=\[\]\{\};:'`\2\n]+
 URL                     [^ \n\t()\[\]\{\}'"]+
@@ -239,7 +241,7 @@ STRONG                  "'''''"
 	if (token != NULL)
 	{
 		unput('\n');
-		yylval->node = strdup(token->value.c_str());
+		yylval->text = strdup(token->value.c_str());
 		return token->id;
 	}
 	previousTokens.reset();
@@ -252,8 +254,12 @@ STRONG                  "'''''"
  /*
   * Begin of block quote line.
   */
-<OPEN>{BLOCKQUOTE} {
+<OPEN>">"+" " {
 	EMIT(TOK_OPEN_BLOCKQUOTE);
+}
+
+<OPEN>">"+/{EOL} {
+	BEGIN(CONTENT);
 }
 
 
@@ -313,7 +319,7 @@ STRONG                  "'''''"
 	const Token *token = pending.getNext();
 	if (token != NULL)
 	{
-		yylval->node = strdup(token->value.c_str());
+		yylval->text = strdup(token->value.c_str());
 		return token->id;
 	}
 	else

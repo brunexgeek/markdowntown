@@ -53,24 +53,6 @@ Node::Node(
 		addChild( *(new Node(*obj.children[i])) );
 }
 
-/*
-Node::Node(
-	int type,
-	const char *value,
-	Node *parent,
-	int childNo,
-	... ) : type(type), parent(parent)
-{
-	if (value != NULL)
-		this->value = value;
-	va_list args;
-	if (childNo <= 0) return;
-	children.resize(childNo);
-	va_start(args, childNo);
-	for (int i = 0; i < childNo; ++i)
-		children[i] = va_arg(args, Node*);
-	va_end(args);
-}*/
 
 Node::~Node()
 {

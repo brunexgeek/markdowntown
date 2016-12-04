@@ -16,7 +16,7 @@
 
 
 /*
- * The parser need to know about the 'yyscan_t' type,
+ * The parser needs to know about the 'yyscan_t' type,
  * but the generated header by Flex don't provide this information.
  */
 typedef void *yyscan_t;
@@ -29,8 +29,6 @@ typedef struct
 	std::vector<markdowntown::Node*> stack;
 
 	const char *fileName;
-
-	const char *rule;
 
 } parser_context_t;
 
@@ -60,11 +58,10 @@ using namespace markdowntown;
 
 static void markdowntown_error(parser_context_t *context, const char *msg)
 {
-	printf ("%s:%d:%d: error: %s - %s\n",
+	printf ("%s:%d:%d: error: %s\n",
 		context->fileName,
 		markdowntown_get_lineno(context->lexer),
 		markdowntown_get_column(context->lexer),
-		context->rule,
 		msg);
 	return;
 }
@@ -152,7 +149,6 @@ static void markdowntown_push(
 #define POP()                markdowntown_pop(parserContext->stack)
 #define TOP()                (parserContext->stack[ parserContext->stack.size() - 1 ])
 #define COMBINE(tok,n)       markdowntown_combine(parserContext->stack, (tok), (n))
-#define RULE(x)              parserContext->rule = (x)
 #define PSTACK()             markdowntown_printStack(parserContext->stack, parserContext->parser)
 
 }
@@ -177,41 +173,41 @@ static void markdowntown_push(
  * %union declares of what kinds of values appear on the value stack
  */
 %union {
-	char *node;
+	char *text;
 }
 
 
-%token <node> TOK_CODE
-%token <node> TOK_TEXT
-%token <node> TOK_HASHTAG
-%token <node> TOK_SM
-%token <node> TOK_COLON
-%token <node> TOK_BOL
-%token <node> TOK_OPEN_BLOCKQUOTE
-%token <node> TOK_OPEN_PARAGRAPH
-%token <node> TOK_OPEN_HEADING
-%token <node> TOK_OPEN_BOLD
-%token <node> TOK_OPEN_ITALIC
-%token <node> TOK_OPEN_STRONG
-%token <node> TOK_OPEN_UNORDERED_LIST
-%token <node> TOK_OPEN_ORDERED_LIST
-%token <node> TOK_OPEN_URL
-%token <node> TOK_CLOSE_BLOCKQUOTE
-%token <node> TOK_CLOSE_PARAGRAPH
-%token <node> TOK_CLOSE_HEADING
-%token <node> TOK_CLOSE_BOLD
-%token <node> TOK_CLOSE_ITALIC
-%token <node> TOK_CLOSE_STRONG
-%token <node> TOK_CLOSE_UNORDERED_LIST
-%token <node> TOK_CLOSE_ORDERED_LIST
-%token <node> TOK_CLOSE_URL
-%token <node> TOK_LINE
-%token <node> TOK_RAW_TEXT
+%token <text> TOK_CODE
+%token <text> TOK_TEXT
+%token <text> TOK_HASHTAG
+%token <text> TOK_SM
+%token <text> TOK_COLON
+%token <text> TOK_BOL
+%token <text> TOK_OPEN_BLOCKQUOTE
+%token <text> TOK_OPEN_PARAGRAPH
+%token <text> TOK_OPEN_HEADING
+%token <text> TOK_OPEN_BOLD
+%token <text> TOK_OPEN_ITALIC
+%token <text> TOK_OPEN_STRONG
+%token <text> TOK_OPEN_UNORDERED_LIST
+%token <text> TOK_OPEN_ORDERED_LIST
+%token <text> TOK_OPEN_URL
+%token <text> TOK_CLOSE_BLOCKQUOTE
+%token <text> TOK_CLOSE_PARAGRAPH
+%token <text> TOK_CLOSE_HEADING
+%token <text> TOK_CLOSE_BOLD
+%token <text> TOK_CLOSE_ITALIC
+%token <text> TOK_CLOSE_STRONG
+%token <text> TOK_CLOSE_UNORDERED_LIST
+%token <text> TOK_CLOSE_ORDERED_LIST
+%token <text> TOK_CLOSE_URL
+%token <text> TOK_LINE
+%token <text> TOK_RAW_TEXT
 
 
 %start CompilationUnit
 
-%type <node> Text TextEntry SimpleText BoldText ItalicText StrongText InlineCode RawText
+%type <node> Text TextEntry SimpleText BoldText ItalicText StrongText InlineCode RawText InlineUrl
 
 %%
 

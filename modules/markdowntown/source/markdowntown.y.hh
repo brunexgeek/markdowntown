@@ -52,7 +52,7 @@ extern int markdowntown_debug;
 
 
 /*
- * The parser need to know about the 'yyscan_t' type,
+ * The parser needs to know about the 'yyscan_t' type,
  * but the generated header by Flex don't provide this information.
  */
 typedef void *yyscan_t;
@@ -65,8 +65,6 @@ typedef struct
 	std::vector<markdowntown::Node*> stack;
 
 	const char *fileName;
-
-	const char *rule;
 
 } parser_context_t;
 
@@ -84,7 +82,7 @@ const char *markdowntown_get_token_name( int tok );
 
 
 
-#line 88 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 86 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -125,11 +123,11 @@ const char *markdowntown_get_token_name( int tok );
 
 union YYSTYPE
 {
-#line 179 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1909  */
+#line 175 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1909  */
 
-	char *node;
+	char *text;
 
-#line 133 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 131 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

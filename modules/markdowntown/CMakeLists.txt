@@ -16,7 +16,7 @@ add_custom_target(parser_flex COMMAND flex
 file(GLOB PARSER_SOURCES
 	"source/*.cc")
 
-add_executable(module_markdowntown ${PARSER_SOURCES})
+add_library(module_markdowntown STATIC ${PARSER_SOURCES})
 set_target_properties(module_markdowntown PROPERTIES
     OUTPUT_NAME "markdowntown"
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
