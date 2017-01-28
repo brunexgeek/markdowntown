@@ -85,8 +85,14 @@ void Compiler::printTokens(
 
 		// prints the token information
 		if (tok == TOK_TEXT || tok == TOK_RAW_TEXT)
+
 		{
 			out << "'" << temp.text << "'" << std::endl;
+		}
+		else
+		if (tok == TOK_MACRO_IDENTIFIER || tok == TOK_MACRO_VALUE)
+		{
+			out << markdowntown_get_token_name(tok) << " -> '" << temp.text << "'" << std::endl;
 		}
 		else
 		{
@@ -190,10 +196,12 @@ void Compiler::prune(
 			if ((current->type == NTY_ORDERED_LIST ||  current->type == NTY_UNORDERED_LIST) &&
 				current->type == previous->type)
 			{
+				// check if we the children are list nodes
 				bool onlyList = true;
 				Node *child = current->first();
 				for (; onlyList && child != NULL; child = child->next())
 					onlyList &= (child->type == NTY_ORDERED_LIST || child->type == NTY_UNORDERED_LIST);
+
 				if (onlyList)
 				{
 					*previous << *current;
@@ -205,6 +213,7 @@ void Compiler::prune(
 				}
 			}
 		}
+		// TODO: handle the case of a paragraph inside another paragraph (continuation with paragraphs)
 
 		previous = current;
 		current = current->next();

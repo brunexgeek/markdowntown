@@ -19,6 +19,36 @@ class HtmlExporter
 		void write(
 			std::ostream &out,
 			const Node &node ) const;
+
+	private:
+		void writeChildren(
+			std::ostream &out,
+			const Node &node ) const;
+
+		void writeFormat(
+			std::ostream &out,
+			const Node &node ) const;
+
+		void writeHeading(
+			std::ostream &out,
+			const Node &node ) const;
+
+		void writeParagraph(
+			std::ostream &out,
+			const Node &node ) const;
+
+		void writeBlockQuote(
+			std::ostream &out,
+			const Node &node ) const;
+
+		void writeList(
+			std::ostream &out,
+			const Node &node ) const;
+
+		void writeNode(
+			std::ostream &out,
+			const Node &node ) const;
+
 };
 
 

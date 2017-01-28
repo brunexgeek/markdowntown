@@ -120,7 +120,9 @@ const char *markdowntown_get_token_name( int tok );
     TOK_LINE = 286,
     TOK_RAW_TEXT = 287,
     TOK_MACRO = 288,
-    TOK_IDENTIFIER = 289
+    TOK_MACRO_IDENTIFIER = 289,
+    TOK_MACRO_VALUE = 290,
+    TOK_MACRO_PIPE = 291
   };
 #endif
 
@@ -133,7 +135,7 @@ union YYSTYPE
 
 	char *text;
 
-#line 137 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 139 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

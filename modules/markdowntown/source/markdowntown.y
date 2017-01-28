@@ -208,12 +208,15 @@ static void markdowntown_push(
 %token <text> TOK_LINE
 %token <text> TOK_RAW_TEXT
 %token <text> TOK_MACRO
-%token <text> TOK_IDENTIFIER
+%token <text> TOK_MACRO_IDENTIFIER
+%token <text> TOK_MACRO_VALUE
+%token <text> TOK_MACRO_PIPE
 
 
 %start CompilationUnit
 
-%type <node> Text TextEntry SimpleText BoldText ItalicText StrongText InlineCode RawText InlineUrl Macro
+%type <node> Text TextEntry SimpleText BoldText ItalicText StrongText InlineCode RawText
+%type <node> Identifier InlineUrl Macro MacroParameterList MacroParameter
 
 %%
 
@@ -240,7 +243,7 @@ BlockEntry:
 
 Heading:
 	TOK_OPEN_HEADING Text TOK_CLOSE_HEADING
-	{ TOP()->type = NTY_HEADING; std::cout << "@@@ HEADING\n"; }
+	{ TOP()->type = NTY_HEADING; TOP()->counter = strlen($1); std::cerr << "-----" << $1 << "-----" << std::endl; }
 	;
 
 Paragraph:
@@ -298,8 +301,8 @@ SimpleText:
 	;
 
 Identifier:
-	TOK_IDENTIFIER
-	{ PUSH(NTY_IDENTIFIER, $1); }
+	TOK_MACRO_IDENTIFIER
+	{ PUSH(NTY_MACRO_IDENTIFIER, $1); }
 	;
 
 RawText:
@@ -334,7 +337,34 @@ InlineUrl:
 
 Macro:
 	TOK_OPEN_MACRO Identifier TOK_CLOSE_MACRO
-	{ COMBINE(NTY_MACRO, 1); }
+	{
+		PUSH(NTY_MACRO_PARAM_LIST, NULL);
+		COMBINE(NTY_MACRO, 2);
+	}
+	| TOK_OPEN_MACRO Identifier TOK_MACRO_PIPE MacroParameterList TOK_CLOSE_MACRO
+	{ COMBINE(NTY_MACRO, 2); }
+	;
+
+MacroParameterList:
+	MacroParameter
+	{ COMBINE(NTY_MACRO_PARAM_LIST, 1); }
+	| MacroParameterList TOK_MACRO_PIPE MacroParameter
+	{ COMBINE(0, 1); }
+	;
+
+MacroParameter:
+	TOK_MACRO_IDENTIFIER
+	{
+		PUSH(NTY_MACRO_IDENTIFIER, $1);
+		PUSH(NTY_MACRO_VALUE, NULL);
+		COMBINE(NTY_MACRO_PARAM, 2);
+	}
+	| TOK_MACRO_IDENTIFIER TOK_MACRO_VALUE
+		{
+		PUSH(NTY_MACRO_IDENTIFIER, $1);
+		PUSH(NTY_MACRO_VALUE, $2);
+		COMBINE(NTY_MACRO_PARAM, 2);
+	}
 	;
 
 %%

@@ -4,23 +4,60 @@
 namespace markdowntown {
 
 
-static void write(
-	std::ostream &out,
-	const Node &node );
-
-
-static void writeChildren(
-	std::ostream &out,
-	const Node &node )
+HtmlExporter::HtmlExporter( )
 {
-	for (const Node *current = node.first(); current != NULL; current = current->next())
-		write(out, *current);
+
 }
 
 
-static void writeParagraph(
+HtmlExporter::~HtmlExporter()
+{
+
+}
+
+
+void HtmlExporter::writeChildren(
 	std::ostream &out,
-	const Node &node )
+	const Node &node ) const
+{
+	for (const Node *current = node.first(); current != NULL; current = current->next())
+		writeNode(out, *current);
+}
+
+
+void HtmlExporter::writeFormat(
+	std::ostream &out,
+	const Node &node ) const
+{
+	std::string tag;
+
+	if (node.type == NTY_BOLD)
+		tag = "strong";
+	else
+	if (node.type == NTY_ITALIC)
+		tag = "em";
+	else
+		tag = "strong";
+
+	out << "<" << tag << ">";
+	writeChildren(out, node);
+	out << "</" << tag << ">";
+}
+
+
+void HtmlExporter::writeHeading(
+	std::ostream &out,
+	const Node &node ) const
+{
+	out << "<h" << node.counter << ">";
+	writeChildren(out, node);
+	out << "</h" << node.counter << ">";
+}
+
+
+void HtmlExporter::writeParagraph(
+	std::ostream &out,
+	const Node &node ) const
 {
 	out << "<p>";
 	writeChildren(out, node);
@@ -28,9 +65,9 @@ static void writeParagraph(
 }
 
 
-static void writeBlockQuote(
+void HtmlExporter::writeBlockQuote(
 	std::ostream &out,
-	const Node &node )
+	const Node &node ) const
 {
 	out << "<blockquote>";
 	writeChildren(out, node);
@@ -38,9 +75,9 @@ static void writeBlockQuote(
 }
 
 
-static void writeList(
+void HtmlExporter::writeList(
 	std::ostream &out,
-	const Node &node )
+	const Node &node ) const
 {
 	std::string tag;
 
@@ -50,8 +87,6 @@ static void writeList(
 		tag = "ul";
 
 	const Node *previous = node.previous();
-	//if (previous != NULL)
-	//	std::cerr << "Previous is " << Node::name(previous->type) << " and current is " << Node::name(node.type) << std::endl;
 	if (previous == NULL || previous->type != node.type)
 		out << "<" << tag << ">";
 
@@ -65,9 +100,9 @@ static void writeList(
 }
 
 
-static void write(
+void HtmlExporter::writeNode(
 	std::ostream &out,
-	const Node &node )
+	const Node &node ) const
 {
 	switch (node.type)
 	{
@@ -86,20 +121,21 @@ static void write(
 			break;
 		case NTY_TEXT:
 			out << node.text;
+			break;
+		case NTY_CODE:
+			out << "<code>" << node.text << "</code>";
+			break;
+		case NTY_HEADING:
+			writeHeading(out, node);
+			break;
+		case NTY_BOLD:
+		case NTY_ITALIC:
+		case NTY_STRONG:
+			writeFormat(out, node);
+			break;
 		default:
-			std::cerr << "Unknown " << Node::name(node.type) << std::endl;
+			std::cerr << "Unknown node '" << Node::name(node.type) << '\'' << std::endl;
 	}
-}
-
-
-HtmlExporter::HtmlExporter( )
-{
-
-}
-
-
-HtmlExporter::~HtmlExporter()
-{
 
 }
 
@@ -109,7 +145,7 @@ void HtmlExporter::write(
 	const Node &node ) const
 {
 	out << "<html><head></head><body>";
-	markdowntown::write(out, node);
+	writeNode(out, node);
 	out << "</body></html>";
 }
 

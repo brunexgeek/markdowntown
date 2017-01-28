@@ -71,7 +71,7 @@ class TokenList
 				const Token &current  = entries[index];
 				const Token &previous = object.entries[index];
 
-std::cerr << markdowntown_get_token_name(current.id) << " != " << markdowntown_get_token_name(previous.id) << "?\n";
+//std::cerr << markdowntown_get_token_name(current.id) << " != " << markdowntown_get_token_name(previous.id) << "?\n";
 
 				// always close the last level of a list
 				if ((current.id == TOK_OPEN_ORDERED_LIST || current.id == TOK_OPEN_UNORDERED_LIST) &&
@@ -225,18 +225,21 @@ OWS                     {WS}*
   */
 UNORDERED_LIST          "*"" "
 ORDERED_LIST            "#"" "
-HEADING                 "="+" "
+HEADING                 "="+" "{OWS}
 
 BLOCKQUOTE              ">"+" "
-EMPTY_BLOCKQUOTE        ">"/{EOL}
 
 TEXT                    [^=\[\]\{\};:'`\2\n]+
 URL                     [^ \n\t()\[\]\{\}'"]+
+
 IDENTIFIER              [A-Za-z_][A-Za-z_0-9]*
+VALUE                   [^}=|]+
 
 ITALIC                  "''"
 BOLD                    "'''"
 STRONG                  "'''''"
+
+CODE                    "`"
 
 %x PENDING
 %x OPEN
@@ -244,6 +247,7 @@ STRONG                  "'''''"
 %x URL
 %x CONTINUATION
 %x MACRO
+%x MACRO_PARAM
 
 %%
 
@@ -296,8 +300,21 @@ STRONG                  "'''''"
   * Begin of heading.
   */
 <OPEN>{HEADING} {
+	char *ptr = yytext;
+	while (*ptr != 0)
+	{
+		if (*ptr != '=')
+			*ptr = 0;
+		else
+			++ptr;
+	}
 	BEGIN(CONTENT);
 	EMIT(TOK_OPEN_HEADING);
+}
+
+
+<CONTENT>"="+{OWS}/{EOL} {
+	/* ignores the heading close */
 }
 
 
@@ -388,11 +405,18 @@ STRONG                  "'''''"
 <CONTENT>{ITALIC}		{ EMIT_TOGGLE(statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
 
 
-<CONTENT>"="+{OWS}/{EOL} {
-	/* ignores the heading close */
+<CONTENT>{CODE}[^`]*{CODE} {
+	int length = strlen(yytext);
+	if (length > 0)
+		yytext[0] = ' ';
+	yytext[length - 1] = ' ';
+
+	for (int i = 0; i < length; ++i)
+		if (yytext[i] == '\2' || yytext[i] == '\n') yytext[i] = ' ';
+
+	EMIT(TOK_CODE);
 }
 
-<CONTENT>"`"[^`]*"`"						{ EMIT(TOK_CODE); }
 <CONTENT>"{{{" {
 	int count = 0;
 	int current = 0;
@@ -419,16 +443,32 @@ STRONG                  "'''''"
 
 <CONTENT>{TEXT}                          { EMIT(TOK_TEXT); }
 
-<CONTENT>"{{"{OWS} {
+<CONTENT>"{{" {
 	EMIT(TOK_OPEN_MACRO);
 	BEGIN(MACRO);
 }
 
-<MACRO>{IDENTIFIER} {
-	EMIT(TOK_IDENTIFIER);
+<MACRO>{OWS}{IDENTIFIER}{OWS} {
+	EMIT(TOK_MACRO_IDENTIFIER);
 }
 
-<MACRO>{OWS}"}}" {
+<MACRO>"|" |
+<MACRO_PARAM>"|" {
+	EMIT(TOK_MACRO_PIPE);
+	BEGIN(MACRO_PARAM);
+}
+
+<MACRO_PARAM>"="{OWS}{VALUE}{OWS} {
+	yytext[0] = ' ';
+	EMIT(TOK_MACRO_VALUE);
+}
+
+<MACRO_PARAM>{OWS}{IDENTIFIER}{OWS} {
+	EMIT(TOK_MACRO_IDENTIFIER);
+}
+
+<MACRO>"}}" |
+<MACRO_PARAM>"}}" {
 	EMIT(TOK_CLOSE_MACRO);
 	BEGIN(CONTENT);
 }
