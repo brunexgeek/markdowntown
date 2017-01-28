@@ -35,6 +35,7 @@ static const char * NODE_TYPES[] =
 	"MACRO_VALUE",
 	"MACRO_PARAM",
 	"MACRO_PARAM_LIST",
+	"EMPTY",
 	"NULL"
 };
 
@@ -171,6 +172,7 @@ void Node::append(
 	}
 
 	node->nextNode = NULL;
+	node->parent = this;
 
 	/*if (position < 0 || children.size() == 0 || position >= (int) children.size())
 	{
@@ -253,6 +255,9 @@ void Node::operator <<(
 	}
 
 	source.children = NULL;
+
+	for (Node *current = children; current != NULL; current = current->nextNode)
+		current->parent = this;
 
 	/*std::vector<Node*>::iterator it = source.children.begin();
 	for (; it != source.children.end(); ++it)

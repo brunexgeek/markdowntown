@@ -69,7 +69,7 @@ void HtmlExporter::writeBlockQuote(
 	std::ostream &out,
 	const Node &node ) const
 {
-	out << "<blockquote>";
+	out << "<blockquote class='type" << node.counter << "'>";
 	writeChildren(out, node);
 	out << "</blockquote>";
 }
@@ -123,7 +123,7 @@ void HtmlExporter::writeNode(
 			out << node.text;
 			break;
 		case NTY_CODE:
-			out << "<code>" << node.text << "</code>";
+			out << "<code class='type" << node.counter << "'>" << node.text << "</code>";
 			break;
 		case NTY_HEADING:
 			writeHeading(out, node);
@@ -132,6 +132,9 @@ void HtmlExporter::writeNode(
 		case NTY_ITALIC:
 		case NTY_STRONG:
 			writeFormat(out, node);
+			break;
+		case NTY_EMPTY:
+		case NTY_MACRO:
 			break;
 		default:
 			std::cerr << "Unknown node '" << Node::name(node.type) << '\'' << std::endl;

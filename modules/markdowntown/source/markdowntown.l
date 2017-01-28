@@ -216,15 +216,15 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 BOL                     "\2"
 EOL						"\n"
 WS                      [ \t]
-CONTINUE                "\t"|"    "" "*
+CONTINUE                "\t"|"    "
 OWS                     {WS}*
 
  /*
   * UNORDERED_LIST          "*"+" "
   * ORDERED_LIST            "#"+" "
   */
-UNORDERED_LIST          "*"" "
-ORDERED_LIST            "#"" "
+UNORDERED_LIST          "*"
+ORDERED_LIST            "#"
 HEADING                 "="+" "{OWS}
 
 BLOCKQUOTE              ">"+" "
@@ -233,13 +233,11 @@ TEXT                    [^=\[\]\{\};:'`\2\n]+
 URL                     [^ \n\t()\[\]\{\}'"]+
 
 IDENTIFIER              [A-Za-z_][A-Za-z_0-9]*
-VALUE                   [^}=|]+
+VALUE                   [^}|\n]+
 
 ITALIC                  "''"
 BOLD                    "'''"
 STRONG                  "'''''"
-
-CODE                    "`"
 
 %x PENDING
 %x OPEN
@@ -248,11 +246,13 @@ CODE                    "`"
 %x CONTINUATION
 %x MACRO
 %x MACRO_PARAM
+%x LIST_MODE
 
 %%
 
 
 {BOL}{OWS}/{EOL} {
+	EMIT(TOK_EMPTY);
 	pending = currentTokens.process(previousTokens);
 	BEGIN(PENDING);
 }
@@ -281,15 +281,22 @@ CODE                    "`"
  /*
   * Begin of block quote line.
   */
-<OPEN>">"+" " {
+<OPEN,LIST_MODE>">"+" " {
 	EMIT(TOK_OPEN_BLOCKQUOTE);
 }
 
-<OPEN>">"+/{EOL} {
+ /*
+  * Empty block quote.
+  */
+<OPEN,LIST_MODE>">"+{OWS}/{EOL} {
+	EMIT(TOK_OPEN_BLOCKQUOTE);
+	EMIT(TOK_EMPTY);
 	BEGIN(CONTENT);
 }
 
-
+ /*
+  * Continuation of the previous statement.
+  */
 <OPEN>{CONTINUE} {
 	EMIT(TOK_OPEN_CONTINUATION);
 	//BEGIN(CONTENT);
@@ -299,7 +306,7 @@ CODE                    "`"
  /*
   * Begin of heading.
   */
-<OPEN>{HEADING} {
+<OPEN,LIST_MODE>{HEADING} {
 	char *ptr = yytext;
 	while (*ptr != 0)
 	{
@@ -318,35 +325,29 @@ CODE                    "`"
 }
 
 
-<OPEN>{OWS}"---""-"+{OWS}/{EOL} {
+<OPEN,LIST_MODE>{OWS}"---""-"+{OWS}/{EOL} {
 	EMIT(TOK_LINE);
 	pending = currentTokens.process(previousTokens);
 	BEGIN(PENDING);
 }
 
 
-<OPEN>{UNORDERED_LIST} {
-	if (yytext != NULL)
-	{
-		for (size_t i = 0; yytext[i] == '*'; ++i)
-			EMIT(TOK_OPEN_UNORDERED_LIST);
-	}
+<OPEN>{UNORDERED_LIST}+" " {
+	EMIT(TOK_OPEN_UNORDERED_LIST);
+	BEGIN(LIST_MODE);
 }
 
 
-<OPEN>{ORDERED_LIST} {
-	if (yytext != NULL)
-	{
-		for (size_t i = 0; yytext[i] == '#'; ++i)
-			EMIT(TOK_OPEN_ORDERED_LIST);
-	}
+<OPEN>{ORDERED_LIST}+" " {
+	EMIT(TOK_OPEN_ORDERED_LIST);
+	BEGIN(LIST_MODE);
 }
 
 
  /*
   * Begin of non-empty line (paragraph).
   */
-<OPEN>. {
+<OPEN,LIST_MODE>. {
 	unput(yytext[0]);
 	BEGIN(CONTENT);
 	EMIT(TOK_OPEN_PARAGRAPH);
@@ -373,8 +374,7 @@ CODE                    "`"
 }
 
 
-<OPEN>{EOL} |
-<CONTENT>{EOL} {
+<OPEN,CONTENT>{EOL} {
 	unput('\n');
 	pending = currentTokens.process(previousTokens);
 	BEGIN(PENDING);
@@ -405,14 +405,21 @@ CODE                    "`"
 <CONTENT>{ITALIC}		{ EMIT_TOGGLE(statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
 
 
-<CONTENT>{CODE}[^`]*{CODE} {
+<CONTENT>"`"+[^`\n]+"`"+ {
 	int length = strlen(yytext);
-	if (length > 0)
-		yytext[0] = ' ';
-	yytext[length - 1] = ' ';
 
-	for (int i = 0; i < length; ++i)
-		if (yytext[i] == '\2' || yytext[i] == '\n') yytext[i] = ' ';
+	// computes the level
+	int level = 0;
+	char *ptr = yytext;
+	for (; *ptr == '`'; ++ptr)
+	{
+		// *ptr = ' ';
+		++level;
+	}
+
+	for (; *ptr != '`' && *ptr != 0; ++ptr);
+
+	*ptr = 0;
 
 	EMIT(TOK_CODE);
 }
@@ -458,7 +465,7 @@ CODE                    "`"
 	BEGIN(MACRO_PARAM);
 }
 
-<MACRO_PARAM>"="{OWS}{VALUE}{OWS} {
+<MACRO_PARAM>"="{VALUE} {
 	yytext[0] = ' ';
 	EMIT(TOK_MACRO_VALUE);
 }

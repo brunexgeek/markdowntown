@@ -171,25 +171,45 @@ const Node *Compiler::getTree() const
 void Compiler::prune(
 	Node *root )
 {
+	while ( pruneNode(root) )
+	{
+		std::cerr << "Pruned!\n";
+	}
+}
+
+
+static void mergeNodes(
+	Node *nodeA,
+	Node *nodeB )
+{
+	*nodeA << *nodeB;
+	if (nodeB->parent != NULL)
+		nodeB->parent->remove(nodeB);
+	delete nodeB;
+}
+
+
+bool Compiler::pruneNode(
+	Node *root )
+{
+	bool hasChange = false;
+
 	Node *previous = NULL;
 	Node *current = root->first();
 
 	while (current != NULL)
 	{
-		prune(current);
+		hasChange |= pruneNode(current);
 
 		if (previous != NULL)
 		{
+			bool merge = false;
+
 			// merge contiguous paragraphs
 			if ((current->type == NTY_PARAGRAPH && current->type == previous->type) ||
 				current->type == NTY_CONTINUATION)
 			{
-				*previous << *current;
-				root->remove(current);
-				Node *temp = current;
-				current = current->next();
-				delete temp;
-				continue;
+				merge = true;
 			}
 			else
 			// merge lists if the current one only have list nodes
@@ -197,20 +217,23 @@ void Compiler::prune(
 				current->type == previous->type)
 			{
 				// check if we the children are list nodes
-				bool onlyList = true;
+				merge = true;
 				Node *child = current->first();
-				for (; onlyList && child != NULL; child = child->next())
-					onlyList &= (child->type == NTY_ORDERED_LIST || child->type == NTY_UNORDERED_LIST);
+				for (; merge && child != NULL; child = child->next())
+					merge &= (child->type == NTY_ORDERED_LIST || child->type == NTY_UNORDERED_LIST);
 
-				if (onlyList)
-				{
-					*previous << *current;
-					root->remove(current);
-					Node *temp = current;
-					current = current->next();
-					delete temp;
-					continue;
-				}
+			}
+			else
+			if (current->type == NTY_BLOCKQUOTE && current->type == previous->type)
+				merge = true;
+
+			if (merge)
+			{
+				Node *temp = current->next();
+				mergeNodes(previous, current);
+				hasChange = true;
+				current = temp;
+				continue;
 			}
 		}
 		// TODO: handle the case of a paragraph inside another paragraph (continuation with paragraphs)
@@ -218,6 +241,8 @@ void Compiler::prune(
 		previous = current;
 		current = current->next();
 	}
+
+	return hasChange;
 }
 
 

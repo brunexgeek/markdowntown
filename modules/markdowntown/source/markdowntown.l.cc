@@ -448,8 +448,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	yyg->yy_c_buf_p = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 34
-#define YY_END_OF_BUFFER 35
+#define YY_NUM_RULES 33
+#define YY_END_OF_BUFFER 34
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -457,21 +457,21 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[113] =
+static yyconst flex_int16_t yy_accept[115] =
     {   0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,   35,   34,    2,    3,
-       12,    6,   13,   12,   12,   12,   12,   12,   12,   24,
-       33,   14,   33,   33,   33,   33,   33,   34,   34,   34,
-       18,   34,   26,   27,   34,   34,   34,   30,   28,   34,
-        0,    1,    0,    0,    0,   11,   10,    0,    7,    0,
-        5,    4,    0,   24,   21,    0,    8,    0,    0,    0,
-       22,   25,    0,    0,    0,   17,   16,   17,    0,   26,
-       26,   26,   31,    0,   30,   29,   29,   30,   30,   32,
-        0,    0,    7,   20,    0,   23,   29,   29,    6,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,   34,   33,
+        2,    3,   12,    6,   13,   12,   12,   12,   12,   12,
+       12,   23,   32,   32,   32,   32,   32,   32,   33,   33,
+       33,   17,   33,   25,   26,   33,   33,   33,   29,   27,
+       33,   12,    0,    1,    0,    0,    0,   11,    0,   10,
+        0,    0,    7,    0,    0,    5,    4,    0,   23,   20,
+        0,    8,    0,    0,    0,    0,   24,    0,    0,    0,
+       16,   15,   16,    0,   25,   25,   25,   30,    0,   29,
+       28,   29,   29,   31,    0,    0,    7,   19,    0,   21,
 
-        0,    0,    0,    6,    0,    9,   19,    0,    0,    0,
-       15,    0
+       22,    6,    0,    0,    0,    0,    0,    9,   18,    0,
+        0,    0,   14,    0
     } ;
 
 static yyconst YY_CHAR yy_ec[256] =
@@ -508,135 +508,135 @@ static yyconst YY_CHAR yy_ec[256] =
 
 static yyconst YY_CHAR yy_meta[24] =
     {   0,
-        1,    2,    3,    4,    3,    5,    1,    4,    5,    6,
-        1,    1,    1,    2,    7,    1,    1,    4,    8,    2,
-        4,    9,   10
+        1,    2,    3,    4,    3,    5,    1,    6,    5,    7,
+        1,    1,    1,    2,    2,    1,    1,    6,    8,    2,
+        6,    9,   10
     } ;
 
-static yyconst flex_uint16_t yy_base[122] =
+static yyconst flex_uint16_t yy_base[124] =
     {   0,
-      223,  222,  219,  209,    0,   14,   30,    0,   53,    0,
-        0,    0,   74,    0,   95,    0,  203,  311,    5,  311,
-      311,   75,  311,   78,  197,  185,  169,    8,   88,    0,
-      311,  311,  169,  116,    0,  146,  134,  131,  142,  130,
-      116,   96,  151,  311,  107,  106,   17,  166,  311,  106,
-       81,  311,  102,  114,  103,  311,  311,  113,  119,    9,
-      311,  311,  123,    0,  108,  154,  311,    0,   84,   82,
-      311,   74,    0,   84,   70,   69,  311,  311,  157,    0,
-      158,    0,  311,  167,    0,  162,  170,  173,    0,  311,
-      177,   70,  182,   20,  183,  311,  188,  191,  192,  202,
+      259,  257,  252,  250,    0,   14,   30,    0,   53,    0,
+        0,    0,   74,    0,   95,    0,  116,    0,  252,  312,
+        5,  312,  312,   75,  312,   78,   15,   77,  238,    8,
+      125,    0,  312,  219,  139,    0,  206,  204,  154,  212,
+      192,  185,   89,  174,  312,  178,   90,    0,  189,  312,
+      177,   96,   81,  312,   99,  181,  110,  312,   98,  312,
+      120,  178,  111,    9,  129,  312,  132,    0,    0,  181,
+      135,  312,    0,  167,  165,  155,  151,    0,  143,  133,
+      127,  312,  312,  145,    0,  121,    0,  312,  178,    0,
+        0,  142,    0,  312,  146,   97,  175,   81,  179,    8,
 
-       19,  206,  195,  196,  213,  311,  311,  216,  207,  217,
-      311,  311,  227,  237,  247,  256,  265,  275,  284,  293,
-      301
+      312,  193,  204,   19,  194,  207,  210,  312,  312,  214,
+      215,  218,  312,  312,  228,  238,  248,  257,  266,  276,
+      285,  294,  302
     } ;
 
-static yyconst flex_int16_t yy_def[122] =
+static yyconst flex_int16_t yy_def[124] =
     {   0,
-      113,  113,  113,  113,  114,  114,  112,    7,  112,    9,
-      113,  113,  113,   13,   13,   15,  112,  112,  112,  112,
-      112,  112,  112,  112,  112,  112,  112,  112,  112,  115,
-      112,  112,  112,  112,  116,  117,  112,  112,  118,  119,
-      119,  112,  112,  112,  112,  112,  120,  112,  112,  112,
-      112,  112,  112,  112,  112,  112,  112,  112,  112,  112,
-      112,  112,  112,  115,  112,  112,  112,   34,  116,  117,
-      112,  112,   38,  118,  119,  119,  112,  112,  112,   43,
-      112,   43,  112,  112,   48,  120,  120,  112,   48,  112,
-      112,  112,  112,  112,  112,  112,  120,  120,  112,  112,
+      115,  115,  115,  115,  116,  116,  114,    7,  114,    9,
+      115,  115,  115,   13,   13,   15,    6,   17,  114,  114,
+      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
+      114,  117,  114,  114,  114,  118,  119,  114,  114,  120,
+      121,  121,  114,  114,  114,  114,  114,  122,  114,  114,
+      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
+      114,  114,  114,  114,  114,  114,  114,   31,  117,  114,
+      114,  114,   35,  118,  119,  119,  114,   39,  120,  121,
+      121,  114,  114,  114,   44,  114,   44,  114,  114,   49,
+      122,  114,   49,  114,  114,  114,  114,  114,  114,  114,
 
-      112,  112,  121,  112,  112,  112,  112,  121,  121,  112,
-      112,    0,  112,  112,  112,  112,  112,  112,  112,  112,
-      112
+      114,  114,  114,  114,  114,  123,  114,  114,  114,  123,
+      123,  114,  114,    0,  114,  114,  114,  114,  114,  114,
+      114,  114,  114
     } ;
 
-static yyconst flex_uint16_t yy_nxt[335] =
+static yyconst flex_uint16_t yy_nxt[336] =
     {   0,
-      112,  112,   22,   23,   24,  112,   25,   51,   52,   51,
-       26,   27,   59,   59,   28,   29,   22,   23,   24,   87,
-       25,   87,   60,   60,   26,   27,  107,  101,   28,   29,
-       30,   31,   30,   32,   30,   30,   30,   33,   30,   30,
-       30,   30,   30,   31,   34,   30,   30,   35,   31,   36,
-       37,   30,   31,   38,   39,   40,   18,   40,   40,   38,
-       18,   40,   41,   38,   38,   38,   39,   39,   38,   38,
-       18,   18,   39,   18,   38,   18,   42,   53,   42,   53,
-       53,  100,   55,   51,   52,   51,   54,   77,   77,   54,
-       43,   61,   62,   78,   96,   44,   45,   46,   79,   46,
+      114,  114,   24,   25,   26,  114,   27,   53,   54,   53,
+       28,   29,   63,   63,   30,   31,   24,   25,   26,   58,
+       27,   59,   64,   64,   28,   29,  109,  100,   30,   31,
+       32,   33,   32,   25,   32,   32,   32,   34,   32,   32,
+       32,   32,   32,   33,   35,   32,   32,   36,   33,   37,
+       38,   32,   33,   39,   40,   41,   20,   41,   41,   39,
+       20,   41,   42,   39,   39,   39,   40,   40,   39,   39,
+       20,   20,   40,   20,   39,   20,   43,   55,   43,   55,
+       55,   60,   57,   53,   54,   53,   56,   61,  104,   56,
+       44,   84,   89,   84,   89,   45,   46,   47,   55,   47,
 
-       79,   71,   95,   63,   53,   53,   53,   91,   84,   47,
-       84,   48,   80,   54,   54,   94,   49,   50,   66,   67,
-       66,   93,   85,   93,   92,   58,   61,   62,   90,   83,
-       68,   73,   74,   75,   77,   75,   75,   73,   63,   75,
-       76,   73,   73,   73,   74,   74,   73,   73,   77,   77,
-       74,   78,   73,   81,   72,   81,   66,   67,   66,   79,
-       81,   79,   81,   82,   97,   71,   97,   82,   88,   84,
-       88,   84,   98,   80,   98,   88,   65,   88,   89,   53,
-       58,   99,   89,   85,   93,  102,   93,  102,   54,   57,
-       97,  103,   97,   98,   53,   98,  104,  109,   53,  109,
+       55,   55,   58,   55,   59,   85,   90,   56,  103,   48,
+       56,   49,   55,   97,   95,   97,   50,   51,   52,   20,
+       52,   56,   23,   86,   60,   86,   23,   65,   66,   67,
+       61,   65,   66,   65,   65,   66,   65,   71,   72,   71,
+       68,   71,   72,   71,   92,   82,   92,   84,   55,   84,
+      102,   82,   83,   73,   78,   79,   80,   56,   80,   80,
+       78,   85,   80,   81,   78,   78,   78,   79,   79,   78,
+       78,  101,   82,   79,   76,   78,   86,   97,   86,   97,
+       89,  105,   89,  105,  100,   99,   87,  106,   98,   96,
+       87,   92,   62,   92,   90,   55,  105,   55,  105,   94,
 
-      104,   56,  112,   54,  105,  106,  105,   54,  102,  109,
-      102,  109,   20,  100,  103,  105,  106,  105,  110,  110,
-      110,  110,   20,   19,   19,  111,  111,   18,   18,   18,
-       18,   18,   18,   18,   18,   18,   18,   21,   21,   21,
-       21,   21,   21,   21,   21,   21,   21,   64,  112,   64,
-      112,   64,   64,  112,  112,   64,   69,  112,   69,  112,
-       69,   69,  112,  112,   69,   70,   70,   70,   70,   70,
-       70,   70,   70,   70,   70,   74,   74,  112,  112,  112,
-       74,   74,  112,   74,   75,  112,   75,  112,   75,   75,
-      112,   75,   75,   86,   86,   86,   86,   86,   86,  112,
+       88,   93,  106,   82,   56,   93,  107,  108,  107,  111,
+       82,  111,  107,  108,  107,  103,  112,  111,  112,  111,
+      112,   83,  112,  113,   77,   76,   70,  113,   20,   20,
+       20,   20,   20,   20,   20,   20,   20,   20,   23,   23,
+       23,   23,   23,   23,   23,   23,   23,   23,   69,   62,
+       69,  114,   69,   22,   69,   22,   69,   74,   21,   74,
+       21,   74,  114,   74,  114,   74,   75,   75,   75,  114,
+       75,   75,   75,   75,   75,   75,   79,   79,  114,  114,
+      114,  114,   79,  114,   79,   80,  114,   80,  114,   80,
+      114,   80,   80,   80,   91,   91,   91,  114,   91,   91,
 
-       86,  108,  108,  108,  112,  112,  112,  108,  112,  108,
-       17,  112,  112,  112,  112,  112,  112,  112,  112,  112,
-      112,  112,  112,  112,  112,  112,  112,  112,  112,  112,
-      112,  112,  112,  112
+       91,   91,  110,  110,  110,  114,  114,  114,  114,  114,
+      110,   19,  114,  114,  114,  114,  114,  114,  114,  114,
+      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
+      114,  114,  114,  114,  114
     } ;
 
-static yyconst flex_int16_t yy_chk[335] =
+static yyconst flex_int16_t yy_chk[336] =
     {   0,
-        0,    0,    5,    5,    5,    0,    5,   19,   19,   19,
-        5,    5,   28,   60,    5,    5,    6,    6,    6,   47,
-        6,   47,   28,   60,    6,    6,  101,   94,    6,    6,
+        0,    0,    5,    5,    5,    0,    5,   21,   21,   21,
+        5,    5,   30,   64,    5,    5,    6,    6,    6,   27,
+        6,   27,   30,   64,    6,    6,  104,  100,    6,    6,
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
         7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
         7,    7,    7,    9,    9,    9,    9,    9,    9,    9,
         9,    9,    9,    9,    9,    9,    9,    9,    9,    9,
-        9,    9,    9,    9,    9,    9,   13,   22,   13,   22,
-       24,   92,   24,   51,   51,   51,   22,   76,   75,   24,
-       13,   29,   29,   74,   72,   13,   13,   15,   42,   15,
+        9,    9,    9,    9,    9,    9,   13,   24,   13,   24,
+       26,   28,   26,   53,   53,   53,   24,   28,   98,   26,
+       13,   43,   47,   43,   47,   13,   13,   15,   52,   15,
 
-       42,   70,   69,   29,   53,   55,   53,   55,   46,   15,
-       46,   15,   42,   53,   55,   65,   15,   15,   34,   34,
-       34,   59,   46,   59,   58,   54,   63,   63,   50,   45,
-       34,   38,   38,   38,   41,   38,   38,   38,   63,   38,
-       38,   38,   38,   38,   38,   38,   38,   38,   40,   38,
-       38,   39,   38,   43,   37,   43,   66,   66,   66,   79,
-       81,   79,   81,   43,   86,   36,   86,   43,   48,   84,
-       48,   84,   87,   79,   87,   88,   33,   88,   48,   91,
-       27,   91,   48,   84,   93,   95,   93,   95,   91,   26,
-       97,   95,   97,   98,   99,   98,   99,  103,  104,  103,
+       52,   55,   59,   55,   59,   43,   47,   52,   96,   15,
+       55,   15,   57,   63,   57,   63,   15,   15,   17,   17,
+       17,   57,   17,   86,   61,   86,   17,   31,   31,   31,
+       61,   65,   65,   65,   67,   67,   67,   71,   71,   71,
+       31,   35,   35,   35,   92,   81,   92,   84,   95,   84,
+       95,   80,   79,   35,   39,   39,   39,   95,   39,   39,
+       39,   84,   39,   39,   39,   39,   39,   39,   39,   39,
+       39,   77,   39,   39,   76,   39,   44,   97,   44,   97,
+       89,   99,   89,   99,   75,   74,   44,   99,   70,   62,
+       44,   49,   56,   49,   89,  102,  105,  102,  105,   51,
 
-      104,   25,   17,   99,  100,  100,  100,  104,  102,  109,
-      102,  109,    4,  100,  102,  105,  105,  105,  108,  110,
-      108,  110,    3,    2,    1,  108,  110,  113,  113,  113,
-      113,  113,  113,  113,  113,  113,  113,  114,  114,  114,
-      114,  114,  114,  114,  114,  114,  114,  115,    0,  115,
-        0,  115,  115,    0,    0,  115,  116,    0,  116,    0,
-      116,  116,    0,    0,  116,  117,  117,  117,  117,  117,
-      117,  117,  117,  117,  117,  118,  118,    0,    0,    0,
-      118,  118,    0,  118,  119,    0,  119,    0,  119,  119,
-        0,  119,  119,  120,  120,  120,  120,  120,  120,    0,
+       46,   49,  105,   42,  102,   49,  103,  103,  103,  106,
+       41,  106,  107,  107,  107,  103,  110,  111,  110,  111,
+      112,   40,  112,  110,   38,   37,   34,  112,  115,  115,
+      115,  115,  115,  115,  115,  115,  115,  115,  116,  116,
+      116,  116,  116,  116,  116,  116,  116,  116,  117,   29,
+      117,   19,  117,    4,  117,    3,  117,  118,    2,  118,
+        1,  118,    0,  118,    0,  118,  119,  119,  119,    0,
+      119,  119,  119,  119,  119,  119,  120,  120,    0,    0,
+        0,    0,  120,    0,  120,  121,    0,  121,    0,  121,
+        0,  121,  121,  121,  122,  122,  122,    0,  122,  122,
 
-      120,  121,  121,  121,    0,    0,    0,  121,    0,  121,
-      112,  112,  112,  112,  112,  112,  112,  112,  112,  112,
-      112,  112,  112,  112,  112,  112,  112,  112,  112,  112,
-      112,  112,  112,  112
+      122,  122,  123,  123,  123,    0,    0,    0,    0,    0,
+      123,  114,  114,  114,  114,  114,  114,  114,  114,  114,
+      114,  114,  114,  114,  114,  114,  114,  114,  114,  114,
+      114,  114,  114,  114,  114
     } ;
 
-static yyconst flex_int16_t yy_rule_linenum[34] =
+static yyconst flex_int16_t yy_rule_linenum[33] =
     {   0,
-      255,  261,  266,  284,  288,  293,  302,  316,  321,  328,
-      337,  349,  376,  377,  384,  389,  393,  397,  403,  404,
-      405,  408,  420,  444,  446,  451,  455,  456,  461,  466,
-      470,  471,  477
+      254,  261,  266,  284,  291,  300,  309,  323,  328,  335,
+      341,  350,  377,  384,  389,  393,  397,  403,  404,  405,
+      408,  427,  451,  453,  458,  462,  463,  468,  473,  477,
+      478,  484
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -863,7 +863,8 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 
 
 
-#line 867 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+
+#line 868 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 #define INITIAL 0
 #define PENDING 1
@@ -873,6 +874,7 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 #define CONTINUATION 5
 #define MACRO 6
 #define MACRO_PARAM 7
+#define LIST_MODE 8
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -1217,11 +1219,11 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
-#line 252 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 251 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 
 
 
-#line 1225 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 1227 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1250,13 +1252,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 113 )
+				if ( yy_current_state >= 115 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_current_state != 112 );
+		while ( yy_current_state != 114 );
 		yy_cp = yyg->yy_last_accepting_cpos;
 		yy_current_state = yyg->yy_last_accepting_state;
 
@@ -1275,13 +1277,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 34 )
+			else if ( yy_act < 33 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 34 )
+			else if ( yy_act == 33 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 35 )
+			else if ( yy_act == 34 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -1304,8 +1306,9 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 255 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 254 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
+	EMIT(TOK_EMPTY);
 	pending = currentTokens.process(previousTokens);
 	BEGIN(PENDING);
 }
@@ -1345,6 +1348,9 @@ YY_RULE_SETUP
 	EMIT(TOK_OPEN_BLOCKQUOTE);
 }
 	YY_BREAK
+/*
+  * Empty block quote.
+  */
 case 5:
 /* rule 5 can match eol */
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
@@ -1352,14 +1358,19 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 288 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 291 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
+	EMIT(TOK_OPEN_BLOCKQUOTE);
+	EMIT(TOK_EMPTY);
 	BEGIN(CONTENT);
 }
 	YY_BREAK
+/*
+  * Continuation of the previous statement.
+  */
 case 6:
 YY_RULE_SETUP
-#line 293 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 300 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT(TOK_OPEN_CONTINUATION);
 	//BEGIN(CONTENT);
@@ -1370,7 +1381,7 @@ YY_RULE_SETUP
   */
 case 7:
 YY_RULE_SETUP
-#line 302 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 309 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	char *ptr = yytext;
 	while (*ptr != 0)
@@ -1391,7 +1402,7 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 316 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 323 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	/* ignores the heading close */
 }
@@ -1403,7 +1414,7 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 321 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 328 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT(TOK_LINE);
 	pending = currentTokens.process(previousTokens);
@@ -1412,24 +1423,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 328 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 335 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
-	if (yytext != NULL)
-	{
-		for (size_t i = 0; yytext[i] == '*'; ++i)
-			EMIT(TOK_OPEN_UNORDERED_LIST);
-	}
+	EMIT(TOK_OPEN_UNORDERED_LIST);
+	BEGIN(LIST_MODE);
 }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 337 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 341 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
-	if (yytext != NULL)
-	{
-		for (size_t i = 0; yytext[i] == '#'; ++i)
-			EMIT(TOK_OPEN_ORDERED_LIST);
-	}
+	EMIT(TOK_OPEN_ORDERED_LIST);
+	BEGIN(LIST_MODE);
 }
 	YY_BREAK
 /*
@@ -1437,7 +1442,7 @@ YY_RULE_SETUP
   */
 case 12:
 YY_RULE_SETUP
-#line 349 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 350 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	unput(yytext[0]);
 	BEGIN(CONTENT);
@@ -1452,7 +1457,8 @@ case YY_STATE_EOF(URL):
 case YY_STATE_EOF(CONTINUATION):
 case YY_STATE_EOF(MACRO):
 case YY_STATE_EOF(MACRO_PARAM):
-#line 356 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+case YY_STATE_EOF(LIST_MODE):
+#line 357 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	if (!pending.hasNext())
 	{
@@ -1474,9 +1480,6 @@ case YY_STATE_EOF(MACRO_PARAM):
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
-#line 377 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-case 14:
-/* rule 14 can match eol */
 YY_RULE_SETUP
 #line 377 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
@@ -1485,7 +1488,7 @@ YY_RULE_SETUP
 	BEGIN(PENDING);
 }
 	YY_BREAK
-case 15:
+case 14:
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
 yyg->yy_c_buf_p = yy_cp = yy_bp + 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
@@ -1496,7 +1499,7 @@ YY_RULE_SETUP
 	BEGIN(URL);
 }
 	YY_BREAK
-case 16:
+case 15:
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
@@ -1506,7 +1509,7 @@ YY_RULE_SETUP
 	EMIT(TOK_TEXT);
 }
 	YY_BREAK
-case 17:
+case 16:
 *yy_cp = yyg->yy_hold_char; /* undo effects of setting up yytext */
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
@@ -1516,7 +1519,7 @@ YY_RULE_SETUP
 	EMIT(TOK_TEXT);
 }
 	YY_BREAK
-case 18:
+case 17:
 YY_RULE_SETUP
 #line 397 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
@@ -1524,40 +1527,46 @@ YY_RULE_SETUP
 	BEGIN(CONTENT);
 }
 	YY_BREAK
-case 19:
+case 18:
 YY_RULE_SETUP
 #line 403 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 { EMIT_TOGGLE(statements[STATE_STRONG], TOK_OPEN_STRONG, TOK_CLOSE_STRONG ); }
 	YY_BREAK
-case 20:
+case 19:
 YY_RULE_SETUP
 #line 404 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 { EMIT_TOGGLE(statements[STATE_BOLD],   TOK_OPEN_BOLD,   TOK_CLOSE_BOLD   ); }
 	YY_BREAK
-case 21:
+case 20:
 YY_RULE_SETUP
 #line 405 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 { EMIT_TOGGLE(statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
 	YY_BREAK
-case 22:
-/* rule 22 can match eol */
+case 21:
 YY_RULE_SETUP
 #line 408 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	int length = strlen(yytext);
-	if (length > 0)
-		yytext[0] = ' ';
-	yytext[length - 1] = ' ';
 
-	for (int i = 0; i < length; ++i)
-		if (yytext[i] == '\2' || yytext[i] == '\n') yytext[i] = ' ';
+	// computes the level
+	int level = 0;
+	char *ptr = yytext;
+	for (; *ptr == '`'; ++ptr)
+	{
+		// *ptr = ' ';
+		++level;
+	}
+
+	for (; *ptr != '`' && *ptr != 0; ++ptr);
+
+	*ptr = 0;
 
 	EMIT(TOK_CODE);
 }
 	YY_BREAK
-case 23:
+case 22:
 YY_RULE_SETUP
-#line 420 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 427 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	int count = 0;
 	int current = 0;
@@ -1582,73 +1591,72 @@ YY_RULE_SETUP
 	}
 }
 	YY_BREAK
-case 24:
+case 23:
 YY_RULE_SETUP
-#line 444 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 451 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 { EMIT(TOK_TEXT); }
 	YY_BREAK
-case 25:
+case 24:
 YY_RULE_SETUP
-#line 446 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 453 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT(TOK_OPEN_MACRO);
 	BEGIN(MACRO);
 }
 	YY_BREAK
-case 26:
+case 25:
 YY_RULE_SETUP
-#line 451 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 458 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT(TOK_MACRO_IDENTIFIER);
 }
 	YY_BREAK
+case 26:
+#line 463 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 case 27:
-#line 456 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-case 28:
 YY_RULE_SETUP
-#line 456 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 463 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT(TOK_MACRO_PIPE);
 	BEGIN(MACRO_PARAM);
 }
 	YY_BREAK
-case 29:
-/* rule 29 can match eol */
+case 28:
 YY_RULE_SETUP
-#line 461 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 468 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	yytext[0] = ' ';
 	EMIT(TOK_MACRO_VALUE);
 }
 	YY_BREAK
-case 30:
+case 29:
 YY_RULE_SETUP
-#line 466 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 473 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT(TOK_MACRO_IDENTIFIER);
 }
 	YY_BREAK
+case 30:
+#line 478 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 case 31:
-#line 471 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-case 32:
 YY_RULE_SETUP
-#line 471 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 478 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT(TOK_CLOSE_MACRO);
 	BEGIN(CONTENT);
 }
 	YY_BREAK
-case 33:
+case 32:
 YY_RULE_SETUP
-#line 477 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 484 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 { EMIT(TOK_TEXT); }
 	YY_BREAK
-case 34:
+case 33:
 YY_RULE_SETUP
-#line 479 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 486 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 ECHO;
 	YY_BREAK
-#line 1652 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 1660 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1967,7 +1975,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 113 )
+			if ( yy_current_state >= 115 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -2001,11 +2009,11 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 113 )
+		if ( yy_current_state >= 115 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 112);
+	yy_is_jam = (yy_current_state == 114);
 
 	(void)yyg;
 	return yy_is_jam ? 0 : yy_current_state;
@@ -2978,4 +2986,4 @@ void markdowntown_free (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 479 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 486 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"

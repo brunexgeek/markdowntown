@@ -211,6 +211,7 @@ static void markdowntown_push(
 %token <text> TOK_MACRO_IDENTIFIER
 %token <text> TOK_MACRO_VALUE
 %token <text> TOK_MACRO_PIPE
+%token <text> TOK_EMPTY
 
 
 %start CompilationUnit
@@ -239,11 +240,17 @@ BlockEntry:
 	| UnorderedList
 	| OrderedList
 	| Continuation
+	| Empty
+	;
+
+Empty:
+	TOK_EMPTY
+	{ PUSH(NTY_EMPTY, NULL); }
 	;
 
 Heading:
 	TOK_OPEN_HEADING Text TOK_CLOSE_HEADING
-	{ TOP()->type = NTY_HEADING; TOP()->counter = strlen($1); std::cerr << "-----" << $1 << "-----" << std::endl; }
+	{ TOP()->type = NTY_HEADING; TOP()->counter = (int) strlen($1); std::cerr << "-----" << $1 << "-----" << std::endl; }
 	;
 
 Paragraph:
@@ -327,7 +334,17 @@ StrongText:
 
 InlineCode:
 	TOK_CODE
-	{ PUSH(NTY_TEXT, $1); COMBINE(NTY_CODE, 1); }
+	{
+		std::string value($1);
+		size_t pos = value.find_first_not_of("`");
+		if (pos != std::string::npos)
+			value = value.substr(pos);
+		else
+			pos = 1;
+
+		PUSH(NTY_CODE, value.c_str());
+		TOP()->counter = (int) pos;
+	}
 	;
 
 InlineUrl:

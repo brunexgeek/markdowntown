@@ -37,6 +37,9 @@ class Compiler
 
 		static void prune(
 			Node *root );
+
+		static bool pruneNode(
+			Node *root );
 };
 
 }
