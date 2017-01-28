@@ -300,6 +300,8 @@ void markdowntown_free (void * ,yyscan_t yyscanner );
 #define OPEN 2
 #define CONTENT 3
 #define URL 4
+#define CONTINUATION 5
+#define MACRO 6
 
 #endif
 
@@ -473,8 +475,8 @@ extern int markdowntown_lex \
 #undef YY_DECL
 #endif
 
-#line 395 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 439 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 
-#line 479 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.hh"
+#line 481 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.hh"
 #undef markdowntown_IN_HEADER
 #endif /* markdowntown_HEADER_H */

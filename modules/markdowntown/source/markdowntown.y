@@ -92,7 +92,7 @@ static markdowntown::Node* markdowntown_combine( std::vector<markdowntown::Node*
 	for (size_t i = stack.size() - n; i < stack.size(); ++i)
 	{
 		//std::cout << temp->getValue() << ": adding child " << p->getValue() << std::endl;;
-		temp->addChild( *stack[i] );
+		temp->append( stack[i] );
 	}
 	for (int i = 0; i < n; ++i)
 		stack.pop_back();
@@ -192,6 +192,8 @@ static void markdowntown_push(
 %token <text> TOK_OPEN_UNORDERED_LIST
 %token <text> TOK_OPEN_ORDERED_LIST
 %token <text> TOK_OPEN_URL
+%token <text> TOK_OPEN_CONTINUATION
+%token <text> TOK_OPEN_MACRO
 %token <text> TOK_CLOSE_BLOCKQUOTE
 %token <text> TOK_CLOSE_PARAGRAPH
 %token <text> TOK_CLOSE_HEADING
@@ -201,13 +203,17 @@ static void markdowntown_push(
 %token <text> TOK_CLOSE_UNORDERED_LIST
 %token <text> TOK_CLOSE_ORDERED_LIST
 %token <text> TOK_CLOSE_URL
+%token <text> TOK_CLOSE_CONTINUATION
+%token <text> TOK_CLOSE_MACRO
 %token <text> TOK_LINE
 %token <text> TOK_RAW_TEXT
+%token <text> TOK_MACRO
+%token <text> TOK_IDENTIFIER
 
 
 %start CompilationUnit
 
-%type <node> Text TextEntry SimpleText BoldText ItalicText StrongText InlineCode RawText InlineUrl
+%type <node> Text TextEntry SimpleText BoldText ItalicText StrongText InlineCode RawText InlineUrl Macro
 
 %%
 
@@ -229,6 +235,7 @@ BlockEntry:
 	| HorizontalLine
 	| UnorderedList
 	| OrderedList
+	| Continuation
 	;
 
 Heading:
@@ -238,7 +245,7 @@ Heading:
 
 Paragraph:
 	TOK_OPEN_PARAGRAPH Text TOK_CLOSE_PARAGRAPH
-	{ TOP()->type = NTY_PARAGRAPH; std::cout << "@@@ PARAGRAPH\n"; }
+	{ TOP()->type = NTY_PARAGRAPH; }
 	;
 
 BlockQuote:
@@ -254,6 +261,11 @@ UnorderedList:
 OrderedList:
 	TOK_OPEN_ORDERED_LIST Block TOK_CLOSE_ORDERED_LIST
 	{ TOP()->type = NTY_ORDERED_LIST; }
+	;
+
+Continuation:
+	TOK_OPEN_CONTINUATION Block TOK_CLOSE_CONTINUATION
+	{ TOP()->type = NTY_CONTINUATION; }
 	;
 
 HorizontalLine:
@@ -277,16 +289,17 @@ TextEntry:
 	| StrongText
 	| InlineCode
 	| InlineUrl
-	;
-
-InlineUrl:
-	TOK_OPEN_URL SimpleText SimpleText TOK_CLOSE_URL
-	{ COMBINE(NTY_INLINE_URL, 2); }
+	| Macro
 	;
 
 SimpleText:
 	TOK_TEXT
 	{ PUSH(NTY_TEXT, $1); }
+	;
+
+Identifier:
+	TOK_IDENTIFIER
+	{ PUSH(NTY_IDENTIFIER, $1); }
 	;
 
 RawText:
@@ -312,6 +325,16 @@ StrongText:
 InlineCode:
 	TOK_CODE
 	{ PUSH(NTY_TEXT, $1); COMBINE(NTY_CODE, 1); }
+	;
+
+InlineUrl:
+	TOK_OPEN_URL SimpleText SimpleText TOK_CLOSE_URL
+	{ COMBINE(NTY_INLINE_URL, 2); }
+	;
+
+Macro:
+	TOK_OPEN_MACRO Identifier TOK_CLOSE_MACRO
+	{ COMBINE(NTY_MACRO, 1); }
 	;
 
 %%

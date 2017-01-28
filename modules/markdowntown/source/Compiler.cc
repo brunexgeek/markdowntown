@@ -73,6 +73,8 @@ void Compiler::printTokens(
 			case TOK_CLOSE_UNORDERED_LIST:
 			case TOK_CLOSE_ORDERED_LIST:
 			case TOK_CLOSE_URL:
+			case TOK_CLOSE_CONTINUATION:
+			case TOK_CLOSE_MACRO:
 				indent--;
 				break;
 		}
@@ -103,6 +105,8 @@ void Compiler::printTokens(
 			case TOK_OPEN_UNORDERED_LIST:
 			case TOK_OPEN_ORDERED_LIST:
 			case TOK_OPEN_URL:
+			case TOK_OPEN_CONTINUATION:
+			case TOK_OPEN_MACRO:
 				indent++;
 				break;
 		}
@@ -127,7 +131,7 @@ void Compiler::parse()
 	if (scanString == NULL) goto ESCAPE;
 	markdowntown_set_lineno(1, scanner);
 	markdowntown_set_column(1, scanner);
-	markdowntown_set_debug(1, scanner);
+	markdowntown_set_debug(0, scanner);
 
 	// initializes the parser
 	context.lexer = scanner;
@@ -139,7 +143,9 @@ void Compiler::parse()
 	if (!context.stack.empty())
 	{
 		root = context.stack[0];
-		root->print(std::cout, markdowntown::Node::name);
+		root->print(std::cerr, markdowntown::Node::name);
+		prune(root);
+		root->print(std::cerr, markdowntown::Node::name);
 	}
 	else
 		root = NULL;
@@ -147,6 +153,62 @@ void Compiler::parse()
 	markdowntown__delete_buffer((YY_BUFFER_STATE)scanString, scanner);
 ESCAPE:
 	markdowntown_lex_destroy(scanner);
+}
+
+
+const Node *Compiler::getTree() const
+{
+	return root;
+}
+
+
+void Compiler::prune(
+	Node *root )
+{
+	Node *previous = NULL;
+	Node *current = root->first();
+
+	while (current != NULL)
+	{
+		prune(current);
+
+		if (previous != NULL)
+		{
+			// merge contiguous paragraphs
+			if ((current->type == NTY_PARAGRAPH && current->type == previous->type) ||
+				current->type == NTY_CONTINUATION)
+			{
+				*previous << *current;
+				root->remove(current);
+				Node *temp = current;
+				current = current->next();
+				delete temp;
+				continue;
+			}
+			else
+			// merge lists if the current one only have list nodes
+			if ((current->type == NTY_ORDERED_LIST ||  current->type == NTY_UNORDERED_LIST) &&
+				current->type == previous->type)
+			{
+				bool onlyList = true;
+				Node *child = current->first();
+				for (; onlyList && child != NULL; child = child->next())
+					onlyList &= (child->type == NTY_ORDERED_LIST || child->type == NTY_UNORDERED_LIST);
+				if (onlyList)
+				{
+					*previous << *current;
+					root->remove(current);
+					Node *temp = current;
+					current = current->next();
+					delete temp;
+					continue;
+				}
+			}
+		}
+
+		previous = current;
+		current = current->next();
+	}
 }
 
 

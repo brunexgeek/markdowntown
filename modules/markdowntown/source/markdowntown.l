@@ -58,6 +58,7 @@ class TokenList
 
 			int temp = index;
 			index = 0;
+			bool listMode = false;
 
 			while (index < (int) entries.size())
 			{
@@ -70,11 +71,23 @@ class TokenList
 				const Token &current  = entries[index];
 				const Token &previous = object.entries[index];
 
-//std::cout << markdowntown_get_token_name(current.id) << " != " << markdowntown_get_token_name(previous.id) << "?\n";
+std::cerr << markdowntown_get_token_name(current.id) << " != " << markdowntown_get_token_name(previous.id) << "?\n";
+
+				// always close the last level of a list
+				if ((current.id == TOK_OPEN_ORDERED_LIST || current.id == TOK_OPEN_UNORDERED_LIST) &&
+					previous.id == current.id)
+					listMode = true;
+				else
+				if (listMode)
+				{
+					--index;
+					break;
+				}
 
 				if (current.id != previous.id)
 					break;
 
+				// always close paragraphs
 				if (current.id == TOK_OPEN_PARAGRAPH || previous.id == TOK_OPEN_PARAGRAPH)
 					break;
 
@@ -139,6 +152,8 @@ class TokenList
 					return TOK_CLOSE_UNORDERED_LIST;
 				case TOK_OPEN_ORDERED_LIST:
 					return TOK_CLOSE_ORDERED_LIST;
+				case TOK_OPEN_CONTINUATION:
+					return TOK_CLOSE_CONTINUATION;
 				default:
 					return -1;
 			}
@@ -201,10 +216,15 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 BOL                     "\2"
 EOL						"\n"
 WS                      [ \t]
+CONTINUE                "\t"|"    "" "*
 OWS                     {WS}*
 
-UNORDERED_LIST          "*"+" "
-ORDERED_LIST            "#"+" "
+ /*
+  * UNORDERED_LIST          "*"+" "
+  * ORDERED_LIST            "#"+" "
+  */
+UNORDERED_LIST          "*"" "
+ORDERED_LIST            "#"" "
 HEADING                 "="+" "
 
 BLOCKQUOTE              ">"+" "
@@ -212,6 +232,7 @@ EMPTY_BLOCKQUOTE        ">"/{EOL}
 
 TEXT                    [^=\[\]\{\};:'`\2\n]+
 URL                     [^ \n\t()\[\]\{\}'"]+
+IDENTIFIER              [A-Za-z_][A-Za-z_0-9]*
 
 ITALIC                  "''"
 BOLD                    "'''"
@@ -221,6 +242,8 @@ STRONG                  "'''''"
 %x OPEN
 %x CONTENT
 %x URL
+%x CONTINUATION
+%x MACRO
 
 %%
 
@@ -260,6 +283,12 @@ STRONG                  "'''''"
 
 <OPEN>">"+/{EOL} {
 	BEGIN(CONTENT);
+}
+
+
+<OPEN>{CONTINUE} {
+	EMIT(TOK_OPEN_CONTINUATION);
+	//BEGIN(CONTENT);
 }
 
 
@@ -335,16 +364,16 @@ STRONG                  "'''''"
 }
 
 
-<CONTENT>"["{OWS}/{TEXT}{OWS}"]"{OWS}"("{OWS}{URL}{OWS}")" {
+<CONTENT>"["/{TEXT}"]"{OWS}"("{OWS}{URL}{OWS}")" {
 	EMIT(TOK_OPEN_URL);
 	BEGIN(URL);
 }
 
-<URL>{TEXT}/{OWS}"]" {
+<URL>{TEXT}/"]" {
 	EMIT(TOK_TEXT);
 }
 
-<URL>{URL}/{OWS}")" {
+<URL>{URL}/")" {
 	EMIT(TOK_TEXT);
 }
 
@@ -389,6 +418,21 @@ STRONG                  "'''''"
 }
 
 <CONTENT>{TEXT}                          { EMIT(TOK_TEXT); }
+
+<CONTENT>"{{"{OWS} {
+	EMIT(TOK_OPEN_MACRO);
+	BEGIN(MACRO);
+}
+
+<MACRO>{IDENTIFIER} {
+	EMIT(TOK_IDENTIFIER);
+}
+
+<MACRO>{OWS}"}}" {
+	EMIT(TOK_CLOSE_MACRO);
+	BEGIN(CONTENT);
+}
+
 
 <CONTENT>.                               { EMIT(TOK_TEXT); }
 

@@ -1,8 +1,11 @@
 #include <markdowntown/Compiler.hh>
+#include <markdowntown/HtmlExporter.hh>
 #include <fstream>
+#include <iostream>
 
 
 using markdowntown::Compiler;
+using markdowntown::HtmlExporter;
 using std::ifstream;
 
 
@@ -15,8 +18,15 @@ int main( int argc, char **argv )
 	{
 		Compiler compiler;
 		compiler.setContent(input);
+		//compiler.printTokens(std::cout);
 		compiler.parse();
 		input.close();
+
+		if (compiler.getTree() != NULL)
+		{
+			HtmlExporter exporter;
+			exporter.write( std::cout, *compiler.getTree() );
+		}
 	}
 
 	return 1;

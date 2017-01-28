@@ -29,9 +29,14 @@ class Compiler
 
 		void parse();
 
+		const Node *getTree() const;
+
 	private:
 		std::string content;
 		Node *root;
+
+		static void prune(
+			Node *root );
 };
 
 }

@@ -26,6 +26,9 @@ enum NodeType
 	NTY_UNORDERED_LIST,
 	NTY_ORDERED_LIST,
 	NTY_INLINE_URL,
+	NTY_CONTINUATION,
+	NTY_MACRO,
+	NTY_IDENTIFIER,
 	NTY_NULL
 };
 
@@ -44,50 +47,51 @@ class Node
 			int type,
 			const char *text = NULL);
 
-		Node(
-			const Node &obj );
-
 		virtual ~Node();
 
-		void setChild(
-			int index,
-			Node &value );
+		void remove(
+			const Node *node );
 
-		void removeChild(
-			int index = -1 );
+		void append(
+			Node *node );
 
-		void addChild(
-			Node &value,
-			int position = -1 );
-
-		Node &addChild(
-			int type,
-			const char *text );
-
-		int getChildCount() const;
-
-		Node &operator[](
-			int index );
-
-		const Node &operator[](
-			int index ) const;
+		size_t size() const;
 
 		void print(
 			std::ostream &out,
 			const char *(getTokenName)(int) = NULL,
 			int level = 0,
-			bool recursive = true );
+			bool recursive = true ) const;
 
-		bool hasChild(
-			int modifier );
+		Node *find(
+			int type );
 
 		operator std::string();
 
 		static const char *name(
 			int nid );
 
+		void operator <<(
+			Node &source );
+
+		Node *first();
+
+		Node *first() const;
+
+		Node *previous();
+
+		Node *previous() const;
+
+		Node *next();
+
+		Node *next() const;
+
 	private:
-		std::vector<Node*> children;
+		//std::vector<Node*> children;
+		Node *prevNode, *nextNode, *children;
+
+		Node(
+			const Node &obj );
 };
 
 }

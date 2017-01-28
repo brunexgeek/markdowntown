@@ -104,17 +104,23 @@ const char *markdowntown_get_token_name( int tok );
     TOK_OPEN_UNORDERED_LIST = 270,
     TOK_OPEN_ORDERED_LIST = 271,
     TOK_OPEN_URL = 272,
-    TOK_CLOSE_BLOCKQUOTE = 273,
-    TOK_CLOSE_PARAGRAPH = 274,
-    TOK_CLOSE_HEADING = 275,
-    TOK_CLOSE_BOLD = 276,
-    TOK_CLOSE_ITALIC = 277,
-    TOK_CLOSE_STRONG = 278,
-    TOK_CLOSE_UNORDERED_LIST = 279,
-    TOK_CLOSE_ORDERED_LIST = 280,
-    TOK_CLOSE_URL = 281,
-    TOK_LINE = 282,
-    TOK_RAW_TEXT = 283
+    TOK_OPEN_CONTINUATION = 273,
+    TOK_OPEN_MACRO = 274,
+    TOK_CLOSE_BLOCKQUOTE = 275,
+    TOK_CLOSE_PARAGRAPH = 276,
+    TOK_CLOSE_HEADING = 277,
+    TOK_CLOSE_BOLD = 278,
+    TOK_CLOSE_ITALIC = 279,
+    TOK_CLOSE_STRONG = 280,
+    TOK_CLOSE_UNORDERED_LIST = 281,
+    TOK_CLOSE_ORDERED_LIST = 282,
+    TOK_CLOSE_URL = 283,
+    TOK_CLOSE_CONTINUATION = 284,
+    TOK_CLOSE_MACRO = 285,
+    TOK_LINE = 286,
+    TOK_RAW_TEXT = 287,
+    TOK_MACRO = 288,
+    TOK_IDENTIFIER = 289
   };
 #endif
 
@@ -127,7 +133,7 @@ union YYSTYPE
 
 	char *text;
 
-#line 131 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 137 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

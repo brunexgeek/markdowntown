@@ -29,13 +29,17 @@ static const char * NODE_TYPES[] =
 	"UNORDERED_LIST",
 	"ORDERED_LIST",
 	"INLINE_URL",
+	"CONTINUATION",
+	"MACRO",
+	"IDENTIFIER",
 	"NULL"
 };
 
 
 Node::Node(
 	int type,
-	const char *text ) : type(type), counter(0), line(1), column(1), parent(NULL)
+	const char *text ) : type(type), counter(0), line(1), column(1), parent(NULL),
+		prevNode(NULL), nextNode(NULL), children(NULL)
 {
 	if (text != NULL)
 		this->text = text;
@@ -43,22 +47,21 @@ Node::Node(
 
 
 Node::Node(
-	const Node &obj )
+	const Node &obj ) : type(0), counter(0), line(1), column(1), parent(NULL),
+		prevNode(NULL), nextNode(NULL), children(NULL)
 {
-	text = obj.text;
-	type = obj.type;
-	counter = obj.counter;
-
-	for (size_t i = 0; i < obj.children.size(); ++i)
-		addChild( *(new Node(*obj.children[i])) );
+	// hidden constructor
 }
 
 
 Node::~Node()
 {
-	for (size_t i = 0; i < children.size(); ++i)
-		delete children[i];
-	children.clear();
+	while (children != NULL)
+	{
+		Node *temp = children;
+		children = children->next();
+		delete temp;
+	}
 }
 
 
@@ -66,7 +69,7 @@ void Node::print(
 	std::ostream &out,
 	const char *(getTokenName)(int),
 	int level,
-	bool recursive )
+	bool recursive ) const
 {
 	for (int i = 0; i < level; ++i)
 		out << "   ";
@@ -77,29 +80,29 @@ void Node::print(
 		out << "["<< getTokenName(type) << "] ";
 
 	if (!text.empty())
-		std::cout << "'" << text << "' ";
+		out << "'" << text << "' ";
 
 	if (counter != 0)
-		std::cout << "(" << counter << ")";
-	std::cout << std::endl;
+		out << "(" << counter << ")";
+	out << std::endl;
 
 	if (!recursive) return;
 
-	for (int i = 0; i < (int) children.size(); ++i)
-		children[i]->print(out, getTokenName, level + 1);
+	for (const Node *current = first(); current != NULL; current = current->next())
+		current->print(out, getTokenName, level + 1);
 }
 
 
-bool Node::hasChild(
-	int modifier )
+Node *Node::find(
+	int type )
 {
-	for (int i = 0, n = getChildCount(); i < n; ++i)
-		if ((*this)[i].type == modifier) return true;
+	for (Node *current = children; current != NULL; current = current->next())
+		if (current->type == type) return current;
 
-	return false;
+	return NULL;
 }
 
-
+/*
 void Node::setChild(
 	int index,
 	Node &value )
@@ -107,12 +110,29 @@ void Node::setChild(
 	if (index >= 0 && index < (int)children.size())
 		children[index] = &value;
 	value.parent = this;
-}
+}*/
 
 
-void Node::removeChild(
-	int index )
+void Node::remove(
+	const Node *node )
 {
+	if (node == NULL) return;
+
+	for (Node *current = children; current != NULL; current = current->nextNode)
+	{
+		if (current == node)
+		{
+			Node *prev = current->prevNode;
+			Node *next = current->nextNode;
+
+			if (prev != NULL)
+				prev->nextNode = next;
+			if (next != NULL)
+				next->prevNode = prev;
+			return;
+		}
+	}
+/*
 	if (index == -1)
 	{
 		for (size_t i = 0, n = children.size(); i < n; ++i)
@@ -124,15 +144,32 @@ void Node::removeChild(
 	{
 		children[index]->parent = NULL;
 		children.erase(children.begin() + index);
-	}
+	}*/
 }
 
 
-void Node::addChild(
-	Node &value,
-	int position )
+void Node::append(
+	Node *node)
 {
-	if (position < 0 || children.size() == 0 || position >= (int) children.size())
+	if (node == NULL) return;
+
+	if (children == NULL)
+	{
+		children = node;
+		node->prevNode = NULL;
+	}
+	else
+	{
+		Node *tail = children;
+		while (tail->nextNode != NULL)
+			tail = tail->nextNode;
+		tail->nextNode = node;
+		node->prevNode = tail;
+	}
+
+	node->nextNode = NULL;
+
+	/*if (position < 0 || children.size() == 0 || position >= (int) children.size())
 	{
 		children.push_back(&value);
 	}
@@ -141,10 +178,10 @@ void Node::addChild(
 		vector<Node*>::iterator it = children.begin();
 		children.insert(it + position, &value);
 	}
-	value.parent = this;
+	value.parent = this;*/
 }
 
-
+/*
 Node &Node::addChild(
 	int type,
 	const char *text )
@@ -152,27 +189,32 @@ Node &Node::addChild(
 	Node *node = new Node(type, text);
 	addChild(*node);
 	return *node;
-}
+}*/
 
 
-int Node::getChildCount() const
+size_t Node::size() const
 {
-	return (int) children.size();
+	size_t size = 0;
+	for (const Node *current = first(); current != NULL; current = current->next())
+		++size;
+	return size;
 }
 
-
-Node &Node::operator[](
-	int index )
+/*
+Node *Node::operator[](
+	size_t index )
 {
-	return *children[index];
+	if (index < 0 || index >= children.size()) return NULL;
+	return children[index];
 }
 
 
-const Node &Node::operator[](
-	int index ) const
+const Node *Node::operator[](
+	size_t index ) const
 {
-	return *children[index];
-}
+	if (index < 0 || index >= children.size()) return NULL;
+	return children[index];
+}*/
 
 
 Node::operator std::string ()
@@ -186,6 +228,69 @@ const char *Node::name(
 {
 	if (nid < 0 || nid > NTY_NULL) return "";
 	return NODE_TYPES[nid];
+}
+
+
+void Node::operator <<(
+	Node &source )
+{
+	if (source.children == NULL) return;
+
+	if (children == NULL)
+	{
+		children = source.children;
+	}
+	else
+	{
+		Node *tail = children;
+		while (tail->nextNode != NULL)
+			tail = tail->nextNode;
+		tail->nextNode = source.children;
+		tail->nextNode->prevNode = tail;
+	}
+
+	source.children = NULL;
+
+	/*std::vector<Node*>::iterator it = source.children.begin();
+	for (; it != source.children.end(); ++it)
+		children.push_back(*it);
+	source.children.clear();*/
+}
+
+
+Node *Node::first()
+{
+	return children;
+}
+
+
+Node *Node::first() const
+{
+	return children;
+}
+
+
+Node *Node::previous()
+{
+	return prevNode;
+}
+
+
+Node *Node::previous() const
+{
+	return prevNode;
+}
+
+
+Node *Node::next()
+{
+	return nextNode;
+}
+
+
+Node *Node::next() const
+{
+	return nextNode;
 }
 
 
