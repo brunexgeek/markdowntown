@@ -6,6 +6,9 @@
 namespace markdowntown {
 
 
+static const char *NEWLINE = "\n";
+
+
 HtmlExporter::HtmlExporter( )
 {
 	resetHeading();
@@ -69,16 +72,24 @@ void HtmlExporter::writeFormat(
 	std::string tag;
 
 	if (node.type == NTY_BOLD)
-		tag = "strong";
+		out << "<strong>";
 	else
 	if (node.type == NTY_ITALIC)
-		tag = "em";
+		out << "<em>";
 	else
-		tag = "strong";
+	if (node.type == NTY_STRONG)
+		out << "<strong><em>";
 
-	out << "<" << tag << ">";
 	writeChildren(out, node);
-	out << "</" << tag << ">";
+
+	if (node.type == NTY_BOLD)
+		out << "</strong>";
+	else
+	if (node.type == NTY_ITALIC)
+		out << "</em>";
+	else
+	if (node.type == NTY_STRONG)
+		out << "</em></strong>";
 }
 
 
@@ -105,7 +116,7 @@ void HtmlExporter::writeHeading(
 
 	writeChildren(out, node);
 
-	out << "</h" << node.counter << ">";
+	out << "</h" << node.counter << ">" << NEWLINE;
 }
 
 
@@ -115,7 +126,7 @@ void HtmlExporter::writeParagraph(
 {
 	out << "<p>";
 	writeChildren(out, node);
-	out << "</p>";
+	out << "</p>" << NEWLINE;
 }
 
 
@@ -189,8 +200,16 @@ void HtmlExporter::writeNode(
 			break;
 		case NTY_INLINE_URL:
 			writeHyperlink(out, node);
+		case NTY_RAW_TEXT:
+			out << "<!-- RAW TEXT BEGIN -->" << NEWLINE;
+			out << node.text;
+			out << "<!-- RAW TEXT END -->" << NEWLINE;
+			break;
 		case NTY_EMPTY:
+			break;
 		case NTY_MACRO:
+			if (node.first()->text == "TOC")
+				writeTOC(out, node);
 			break;
 		default:
 			std::cerr << "Unknown node '" << Node::name(node.type) << '\'' << std::endl;
@@ -204,6 +223,8 @@ void HtmlExporter::write(
 	const Node &node )
 {
 	findCSS(node);
+	findTitles(node);
+	resetHeading();
 
 	out << "<html><head>";
 	std::vector<std::string>::const_iterator it = css.begin();
@@ -232,6 +253,88 @@ void HtmlExporter::findCSS(
 		}
 		current = current->next();
 	}
+}
+
+
+static void captureText(
+	const Node *node,
+	std::string &text )
+{
+	if (node->type == NTY_TEXT)
+		text += node->text;
+
+	Node *current = node->first();
+	while (current != NULL)
+	{
+		captureText(current, text);
+		current = current->next();
+	}
+}
+
+
+void HtmlExporter::findTitles(
+	const Node &node )
+{
+	Node *current = node.first();
+	while (current != NULL)
+	{
+		if (current->type == NTY_HEADING && current->first() != NULL)
+		{
+			incHeading(current->counter);
+
+			// generate the heading ID
+			std::stringstream id, value;
+			id << "heading_";
+			for (int i = 0; i < current->counter; ++i)
+			{
+				id << headings[i];
+				value << headings[i] << '.';
+				if (i + 1 < current->counter) id << "_";
+			}
+
+			std::string title;
+			captureText(current, title);
+			titles.push_back( HeadingEntry(title, value.str(), id.str(), current->counter) );
+		}
+
+		Node *item = current->first();
+		while (item != NULL)
+		{
+			findTitles(*item);
+			item = item->next();
+		}
+
+		current = current->next();
+	}
+}
+
+
+void HtmlExporter::writeTOC(
+	std::ostream &out,
+	const Node &node )
+{
+	Macro macro(node);
+
+	std::string title = macro.getParameter("title");
+	if (title.empty()) title = "Summary";
+
+	out << "<h1 class='toc'>" << title << "</h1><ul id='toc' class='toc'>";
+
+	std::vector<HeadingEntry>::const_iterator it = titles.begin();
+	for (; it != titles.end(); ++it)
+	{
+		for (int i = 1; i < it->level; ++i)
+			out << "<ul class='level" << i << "'>";
+
+		out << "<li><a href='#" << it->id << "'>";
+		out << "<span class='numbering'>" << it->number << "</span>";
+		out << it->title << "</a></li>";
+
+		for (int i = 1; i < it->level; ++i)
+			out << "</ul>";
+	}
+
+	out << "</ul>";
 }
 
 

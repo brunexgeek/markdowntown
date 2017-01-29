@@ -24,7 +24,6 @@ class Macro
 			while (current != NULL)
 			{
 				params.insert( MacroEntry(current->first()->text, current->first()->next()->text) );
-				std::cerr << current->first()->text << "   " << current->first()->next()->text << std::endl;
 				current = current->next();
 			}
 

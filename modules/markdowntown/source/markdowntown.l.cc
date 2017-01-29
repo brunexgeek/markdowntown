@@ -602,8 +602,8 @@ static yyconst flex_int16_t yy_chk[220] =
 static yyconst flex_int16_t yy_rule_linenum[28] =
     {   0,
       281,  288,  293,  311,  323,  338,  346,  358,  365,  371,
-      380,  407,  414,  430,  431,  432,  435,  446,  470,  475,
-      479,  480,  485,  490,  494,  495,  501
+      380,  407,  414,  430,  431,  432,  435,  446,  471,  476,
+      480,  481,  486,  491,  495,  496,  502
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1534,30 +1534,31 @@ YY_RULE_SETUP
 {
 	int count = 0;
 	int current = 0;
-	std::string content;
+	std::stringstream content;
 
 	while ((current = yyinput(yyscanner)) != EOF)
 	{
-		if (current == '\2' || current == '\n') continue;
+		if (current == '\2') continue;
 
 		if (current == '}')
 		{
 			if (++count == 3)
 			{
-				EMIT_TEXT(TOK_RAW_TEXT, content.c_str());
+				EMIT_TEXT(TOK_RAW_TEXT, content.str().c_str());
+				break;
 			}
 		}
 		else
 		{
 			count = 0;
-			content += (char) current;
+			content << (char) current;
 		}
 	}
 }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 470 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 471 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_OPEN_MACRO, "");
 	BEGIN(MACRO);
@@ -1565,16 +1566,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 475 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 476 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_MACRO_IDENTIFIER, yytext);
 }
 	YY_BREAK
 case 21:
-#line 480 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 481 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 case 22:
 YY_RULE_SETUP
-#line 480 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 481 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_MACRO_PIPE, "");
 	BEGIN(MACRO_PARAM);
@@ -1582,7 +1583,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 485 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 486 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	yytext[0] = ' ';
 	EMIT_TEXT(TOK_MACRO_VALUE, markdowntown_trim(yytext));
@@ -1590,16 +1591,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 490 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 491 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_MACRO_IDENTIFIER, markdowntown_trim(yytext));
 }
 	YY_BREAK
 case 25:
-#line 495 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 496 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 case 26:
 YY_RULE_SETUP
-#line 495 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 496 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_CLOSE_MACRO, "");
 	BEGIN(CONTENT);
@@ -1607,7 +1608,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 501 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 502 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	Token *top = TOP();
 	if (top == NULL || top->id != TOK_TEXT)
@@ -1622,10 +1623,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 512 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 513 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 ECHO;
 	YY_BREAK
-#line 1629 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 1630 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2955,4 +2956,4 @@ void markdowntown_free (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 512 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 513 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"

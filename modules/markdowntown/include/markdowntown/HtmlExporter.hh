@@ -9,6 +9,25 @@
 namespace markdowntown {
 
 
+struct HeadingEntry
+{
+	std::string title;
+	std::string number;
+	std::string id;
+	int level;
+
+	HeadingEntry(
+		const std::string &title,
+		const std::string &number,
+		const std::string &id,
+		int level = 1 ) : title(title), number(number),
+			id(id), level(level)
+	{
+	}
+
+};
+
+
 class HtmlExporter
 {
 	public:
@@ -23,6 +42,7 @@ class HtmlExporter
 	private:
 		int headings[6];
 		std::vector<std::string> css;
+		std::vector<HeadingEntry> titles;
 
 		void writeChildren(
 			std::ostream &out,
@@ -62,6 +82,13 @@ class HtmlExporter
 		void resetHeading();
 
 		void findCSS(
+			const Node &node );
+
+		void findTitles(
+			const Node &node );
+
+		void writeTOC(
+			std::ostream &out,
 			const Node &node );
 
 };

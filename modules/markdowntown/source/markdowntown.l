@@ -446,23 +446,24 @@ STRONG                  "'''''"
 <CONTENT>"{{{" {
 	int count = 0;
 	int current = 0;
-	std::string content;
+	std::stringstream content;
 
 	while ((current = yyinput(yyscanner)) != EOF)
 	{
-		if (current == '\2' || current == '\n') continue;
+		if (current == '\2') continue;
 
 		if (current == '}')
 		{
 			if (++count == 3)
 			{
-				EMIT_TEXT(TOK_RAW_TEXT, content.c_str());
+				EMIT_TEXT(TOK_RAW_TEXT, content.str().c_str());
+				break;
 			}
 		}
 		else
 		{
 			count = 0;
-			content += (char) current;
+			content << (char) current;
 		}
 	}
 }
