@@ -108,6 +108,7 @@ extern int markdowntown_debug;
 #include <sstream>
 #include <vector>
 #include <markdowntown/Node.hh>
+#include "Token.hh"
 
 
 /*
@@ -141,7 +142,7 @@ const char *markdowntown_get_token_name( int tok );
 
 
 
-#line 145 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:355  */
+#line 146 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -191,11 +192,11 @@ const char *markdowntown_get_token_name( int tok );
 
 union YYSTYPE
 {
-#line 175 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:355  */
+#line 200 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:355  */
 
-	char *text;
+	Token *token;
 
-#line 199 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:355  */
+#line 200 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -211,9 +212,9 @@ int markdowntown_parse (parser_context_t *parserContext);
 
 /* Copy the second part of user declarations.  */
 
-#line 215 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:358  */
+#line 216 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:358  */
 /* Unqualified %code blocks.  */
-#line 52 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:359  */
+#line 53 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:359  */
 
 
 #include "markdowntown.l.hh"
@@ -248,7 +249,7 @@ static markdowntown::Node* markdowntown_combine( std::vector<markdowntown::Node*
 	if (n == 0 || (int) stack.size() < n) return NULL;
 
 	if (tok > 0 )
-		temp = new markdowntown::Node(tok, NULL);
+		temp = new markdowntown::Node(tok);
 	else
 	{
 		if ((int) stack.size() <= n) return NULL;
@@ -277,16 +278,21 @@ static void markdowntown_printStack( std::vector<markdowntown::Node*> &stack  )
 
 static void markdowntown_push(
 	parser_context_t *context,
-	int token,
-	const char *value,
+	int type,
+	const Token *token = NULL,
 	uint32_t line = 1,
 	uint32_t column = 1 )
 {
 	//std::cout << "PUSH " << value << std::endl;
 	markdowntown::Node *node;
-	node = new markdowntown::Node(token,value);
+	if (token != NULL)
+		node = new markdowntown::Node(type, token->value);
+	else
+		node = new markdowntown::Node(type);
+
 	node->line = line;
 	node->column = column;
+	node->counter = (token != NULL) ? token->counter : 0;
 	context->stack.push_back(node);
 }
 
@@ -308,8 +314,27 @@ static void markdowntown_push(
 
 
 #define scanner              parserContext->lexer
-#define PUSH(token,value)    markdowntown_push( parserContext, (token), (value), \
-	markdowntown_get_lineno(parserContext->lexer), markdowntown_get_column(parserContext->lexer) )
+
+#define PUSH_TOKEN(id, token)                                  \
+	{                                                          \
+		markdowntown_push(                                     \
+			parserContext,                                     \
+			(id),                                              \
+			(token),                                           \
+			markdowntown_get_lineno(parserContext->lexer),     \
+			markdowntown_get_column(parserContext->lexer) );   \
+	}
+
+#define PUSH(id)                                               \
+	{                                                          \
+		markdowntown_push(                                     \
+			parserContext,                                     \
+			(id),                                              \
+			NULL,                                              \
+			markdowntown_get_lineno(parserContext->lexer),     \
+			markdowntown_get_column(parserContext->lexer) );   \
+	}
+
 #define NPUSH(node)          markdowntown_push( parserContext, (node) )
 #define POP()                markdowntown_pop(parserContext->stack)
 #define TOP()                (parserContext->stack[ parserContext->stack.size() - 1 ])
@@ -317,7 +342,7 @@ static void markdowntown_push(
 #define PSTACK()             markdowntown_printStack(parserContext->stack, parserContext->parser)
 
 
-#line 321 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:359  */
+#line 346 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:359  */
 
 #ifdef short
 # undef short
@@ -618,11 +643,11 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   225,   225,   229,   231,   236,   237,   238,   239,   240,
-     241,   242,   243,   247,   252,   257,   262,   267,   272,   277,
-     282,   288,   290,   295,   296,   297,   298,   299,   300,   301,
-     302,   306,   311,   316,   321,   326,   331,   336,   351,   356,
-     361,   366,   368,   373,   379
+       0,   250,   250,   254,   256,   261,   262,   263,   264,   265,
+     266,   267,   268,   272,   277,   282,   287,   292,   297,   302,
+     307,   313,   315,   320,   321,   322,   323,   324,   325,   326,
+     327,   331,   336,   341,   346,   351,   356,   361,   368,   373,
+     378,   383,   385,   390,   396
 };
 #endif
 
@@ -1480,184 +1505,176 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 230 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 255 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_BLOCK, 1); }
-#line 1486 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1511 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 232 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 257 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(0, 1); }
-#line 1492 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1517 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 248 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_EMPTY, NULL); }
-#line 1498 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 273 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH(NTY_EMPTY); }
+#line 1523 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 253 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { TOP()->type = NTY_HEADING; TOP()->counter = (int) strlen((yyvsp[-2].text)); std::cerr << "-----" << (yyvsp[-2].text) << "-----" << std::endl; }
-#line 1504 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 278 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { TOP()->type = NTY_HEADING; TOP()->counter = (yyvsp[-2].token)->counter; }
+#line 1529 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 258 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 283 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_PARAGRAPH; }
-#line 1510 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1535 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 263 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { TOP()->type = NTY_BLOCKQUOTE; }
-#line 1516 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 288 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { TOP()->type = NTY_BLOCKQUOTE; TOP()->counter = (yyvsp[-2].token)->counter; }
+#line 1541 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 268 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 293 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_UNORDERED_LIST; }
-#line 1522 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1547 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 273 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 298 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_ORDERED_LIST; }
-#line 1528 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1553 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 278 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 303 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_CONTINUATION; }
-#line 1534 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1559 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 283 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_LINE, (yyvsp[0].text)); }
-#line 1540 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 308 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH_TOKEN(NTY_LINE, (yyvsp[0].token)); }
+#line 1565 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 289 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 314 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_BLOCK, 1); }
-#line 1546 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1571 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 291 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 316 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(0, 1); }
-#line 1552 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1577 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 307 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_TEXT, (yyvsp[0].text)); }
-#line 1558 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 332 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH_TOKEN(NTY_TEXT, (yyvsp[0].token)); }
+#line 1583 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 312 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_MACRO_IDENTIFIER, (yyvsp[0].text)); }
-#line 1564 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 337 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH_TOKEN(NTY_MACRO_IDENTIFIER, (yyvsp[0].token)); }
+#line 1589 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 317 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { PUSH(NTY_RAW_TEXT, (yyvsp[0].text)); }
-#line 1570 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 342 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+    { PUSH_TOKEN(NTY_RAW_TEXT, (yyvsp[0].token)); }
+#line 1595 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 322 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 347 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_BOLD; }
-#line 1576 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1601 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 327 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 352 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_ITALIC; }
-#line 1582 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1607 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 332 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 357 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_STRONG; }
-#line 1588 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1613 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 337 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 362 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
-		std::string value((yyvsp[0].text));
-		size_t pos = value.find_first_not_of("`");
-		if (pos != std::string::npos)
-			value = value.substr(pos);
-		else
-			pos = 1;
-
-		PUSH(NTY_CODE, value.c_str());
-		TOP()->counter = (int) pos;
+		PUSH_TOKEN(NTY_CODE, (yyvsp[0].token));
 	}
-#line 1604 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1621 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 352 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 369 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_INLINE_URL, 2); }
-#line 1610 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1627 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 357 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 374 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
-		PUSH(NTY_MACRO_PARAM_LIST, NULL);
+		PUSH(NTY_MACRO_PARAM_LIST);
 		COMBINE(NTY_MACRO, 2);
 	}
-#line 1619 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1636 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 362 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 379 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_MACRO, 2); }
-#line 1625 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1642 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 367 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 384 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_MACRO_PARAM_LIST, 1); }
-#line 1631 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1648 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 369 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 386 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(0, 1); }
-#line 1637 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1654 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 374 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 391 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
-		PUSH(NTY_MACRO_IDENTIFIER, (yyvsp[0].text));
-		PUSH(NTY_MACRO_VALUE, NULL);
+		PUSH_TOKEN(NTY_MACRO_IDENTIFIER, (yyvsp[0].token));
+		PUSH(NTY_MACRO_VALUE);
 		COMBINE(NTY_MACRO_PARAM, 2);
 	}
-#line 1647 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1664 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 380 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 397 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
-		PUSH(NTY_MACRO_IDENTIFIER, (yyvsp[-1].text));
-		PUSH(NTY_MACRO_VALUE, (yyvsp[0].text));
+		PUSH_TOKEN(NTY_MACRO_IDENTIFIER, (yyvsp[-1].token));
+		PUSH_TOKEN(NTY_MACRO_VALUE, (yyvsp[0].token));
 		COMBINE(NTY_MACRO_PARAM, 2);
 	}
-#line 1657 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1674 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1661 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1678 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1885,7 +1902,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 387 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1906  */
+#line 404 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1906  */
 
 
 const char *markdowntown_get_token_name( int tok )

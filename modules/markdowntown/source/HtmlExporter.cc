@@ -1,4 +1,6 @@
 #include <markdowntown/HtmlExporter.hh>
+#include <markdowntown/Macro.hh>
+#include <sstream>
 
 
 namespace markdowntown {
@@ -6,7 +8,7 @@ namespace markdowntown {
 
 HtmlExporter::HtmlExporter( )
 {
-
+	resetHeading();
 }
 
 
@@ -16,18 +18,53 @@ HtmlExporter::~HtmlExporter()
 }
 
 
+void HtmlExporter::incHeading(
+	size_t level )
+{
+	#define MAX_LEVEL (sizeof(headings) / sizeof(int))
+
+	if (level < 1 || level > MAX_LEVEL) return;
+
+	for (size_t i = 0; i < level - 1; ++i)
+		if (headings[i] == 0) headings[i] = 1;
+
+	++headings[level - 1];
+
+	for (size_t i = level; i < MAX_LEVEL; ++i)
+		headings[i] = 0;
+}
+
+
+void HtmlExporter::resetHeading()
+{
+	for (size_t i = 0; i < (sizeof(headings) / sizeof(int)); ++i)
+		headings[i] = 0;
+}
+
+
 void HtmlExporter::writeChildren(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
 	for (const Node *current = node.first(); current != NULL; current = current->next())
 		writeNode(out, *current);
 }
 
 
+void HtmlExporter::writeHyperlink(
+	std::ostream &out,
+	const Node &node )
+{
+	out << "<a href='";
+
+	out << node.first()->next()->text << "'>";
+	out << node.first()->text << "</a>";
+}
+
+
 void HtmlExporter::writeFormat(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
 	std::string tag;
 
@@ -47,17 +84,34 @@ void HtmlExporter::writeFormat(
 
 void HtmlExporter::writeHeading(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
-	out << "<h" << node.counter << ">";
+	incHeading(node.counter);
+
+	// generate the heading ID
+	std::stringstream id;
+	id << "heading_";
+	for (int i = 0; i < node.counter; ++i)
+	{
+		id << headings[i];
+		if (i + 1 < node.counter) id << "_";
+	}
+
+	out << "<h" << node.counter << " id='" << id.str();
+	out << "'><span class='numbering'>";
+	for (int i = 0; i < node.counter; ++i)
+		out << headings[i] << ".";
+	out << "</span>";
+
 	writeChildren(out, node);
+
 	out << "</h" << node.counter << ">";
 }
 
 
 void HtmlExporter::writeParagraph(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
 	out << "<p>";
 	writeChildren(out, node);
@@ -67,7 +121,7 @@ void HtmlExporter::writeParagraph(
 
 void HtmlExporter::writeBlockQuote(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
 	out << "<blockquote class='type" << node.counter << "'>";
 	writeChildren(out, node);
@@ -77,7 +131,7 @@ void HtmlExporter::writeBlockQuote(
 
 void HtmlExporter::writeList(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
 	std::string tag;
 
@@ -102,7 +156,7 @@ void HtmlExporter::writeList(
 
 void HtmlExporter::writeNode(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
 	switch (node.type)
 	{
@@ -133,6 +187,8 @@ void HtmlExporter::writeNode(
 		case NTY_STRONG:
 			writeFormat(out, node);
 			break;
+		case NTY_INLINE_URL:
+			writeHyperlink(out, node);
 		case NTY_EMPTY:
 		case NTY_MACRO:
 			break;
@@ -145,11 +201,37 @@ void HtmlExporter::writeNode(
 
 void HtmlExporter::write(
 	std::ostream &out,
-	const Node &node ) const
+	const Node &node )
 {
-	out << "<html><head></head><body>";
+	findCSS(node);
+
+	out << "<html><head>";
+	std::vector<std::string>::const_iterator it = css.begin();
+	for (; it != css.end(); ++it)
+		out << "<link rel='stylesheet' type='text/css' href='" << *it << "'/>";
+	out << "</head><body>";
 	writeNode(out, node);
 	out << "</body></html>";
+}
+
+
+void HtmlExporter::findCSS(
+	const Node &node )
+{
+	Node *current = node.first();
+	while (current != NULL)
+	{
+		if (current->type == NTY_PARAGRAPH && current->first() != NULL)
+		{
+			Node *item = current->first();
+			if (item->type == NTY_MACRO && item->first()->text == "StyleSheet")
+			{
+				Macro macro(*item);
+				css.push_back( macro.getParameter("href") );
+			}
+		}
+		current = current->next();
+	}
 }
 
 

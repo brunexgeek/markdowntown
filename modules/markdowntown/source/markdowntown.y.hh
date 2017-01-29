@@ -49,6 +49,7 @@ extern int markdowntown_debug;
 #include <sstream>
 #include <vector>
 #include <markdowntown/Node.hh>
+#include "Token.hh"
 
 
 /*
@@ -82,7 +83,7 @@ const char *markdowntown_get_token_name( int tok );
 
 
 
-#line 86 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 87 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -132,11 +133,11 @@ const char *markdowntown_get_token_name( int tok );
 
 union YYSTYPE
 {
-#line 175 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1909  */
+#line 200 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1909  */
 
-	char *text;
+	Token *token;
 
-#line 140 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 141 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -41,12 +41,17 @@ static const char * NODE_TYPES[] =
 
 
 Node::Node(
-	int type,
-	const char *text ) : type(type), counter(0), line(1), column(1), parent(NULL),
+	int type ) : type(type), counter(0), line(1), column(1), parent(NULL),
 		prevNode(NULL), nextNode(NULL), children(NULL)
 {
-	if (text != NULL)
-		this->text = text;
+}
+
+
+Node::Node(
+	int type,
+	const std::string &text ) : type(type), counter(0), line(1), column(1), parent(NULL),
+		prevNode(NULL), nextNode(NULL), children(NULL), text(text)
+{
 }
 
 

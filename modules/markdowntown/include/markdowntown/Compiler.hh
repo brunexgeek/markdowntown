@@ -27,7 +27,7 @@ class Compiler
 		void printTokens(
 			std::ostream &out );
 
-		void parse();
+		bool parse();
 
 		const Node *getTree() const;
 

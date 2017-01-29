@@ -7,7 +7,11 @@
 #include <fstream>
 #include <iostream>
 #include "markdowntown.y.hh"
+#include "Token.hh"
 
+
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wsign-compare"
 
 enum StatementType
 {
@@ -19,20 +23,6 @@ enum StatementType
 
 
 static bool statements[4] = { false };
-
-
-class Token
-{
-	public:
-		int id;
-		std::string value;
-
-		Token(int id, const std::string &value)
-		{
-			this->id = id;
-			this->value = value;
-		}
-};
 
 
 class TokenList
@@ -91,6 +81,10 @@ class TokenList
 				if (current.id == TOK_OPEN_PARAGRAPH || previous.id == TOK_OPEN_PARAGRAPH)
 					break;
 
+				// always close headings
+				if (current.id == TOK_OPEN_HEADING || previous.id == TOK_OPEN_HEADING)
+					break;
+
 				index++;
 			}
 
@@ -134,6 +128,14 @@ class TokenList
 			index = i;
 		}
 
+		Token * last()
+		{
+			if (entries.size() > 0)
+				return &entries[ entries.size() - 1 ];
+			else
+				return NULL;
+		}
+
 		/*
 		 * Returns the closing token for statements whose do not have
 		 * an explicit closing representation.
@@ -169,6 +171,32 @@ static TokenList currentTokens;
 static TokenList previousTokens;
 
 
+static const std::string markdowntown_trim(
+	const std::string &text )
+{
+	if (&text == NULL || text.empty()) return "";
+
+	size_t start, end;
+
+	for (start = 0; start < text.length(); ++start)
+	{
+		uint8_t current = (uint8_t) text[start];
+		if (current > 0x20) break;
+	}
+
+	for (end = text.length() - 1; end > 0; --end)
+	{
+		uint8_t current = (uint8_t) text[end];
+		if (current > 0x20) break;
+	}
+
+	if (end >= start)
+		return text.substr(start, end - start + 1);
+	else
+		return "";
+}
+
+
 static const char *markdowntown_getTokenText( int tok, const char *text )
 {
 	switch (tok)
@@ -186,10 +214,12 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 		currentTokens.add( Token((id), markdowntown_getTokenText( (id), yytext ) ) );  \
 	}
 
-#define EMIT_TEXT(id, text) \
-	{                                                           \
-		currentTokens.add( Token((id), text ) );  \
+#define EMIT_TEXT(id, text)                            \
+	{                                                  \
+		currentTokens.add( Token( (id), (text) ) );    \
 	}
+
+#define TOP() ( currentTokens.last() )
 
 #define EMIT_TOGGLE(variable, tokTrue, tokFalse) \
 	{ \
@@ -225,12 +255,9 @@ OWS                     {WS}*
   */
 UNORDERED_LIST          "*"
 ORDERED_LIST            "#"
-HEADING                 "="+" "{OWS}
 
-BLOCKQUOTE              ">"+" "
-
-TEXT                    [^=\[\]\{\};:'`\2\n]+
-URL                     [^ \n\t()\[\]\{\}'"]+
+HYPERLINK               [^\]\n\2]+
+ADDRESS                 [^\)\n\2]+
 
 IDENTIFIER              [A-Za-z_][A-Za-z_0-9]*
 VALUE                   [^}|\n]+
@@ -252,7 +279,7 @@ STRONG                  "'''''"
 
 
 {BOL}{OWS}/{EOL} {
-	EMIT(TOK_EMPTY);
+	EMIT_TEXT(TOK_EMPTY, "");
 	pending = currentTokens.process(previousTokens);
 	BEGIN(PENDING);
 }
@@ -268,7 +295,7 @@ STRONG                  "'''''"
 	if (token != NULL)
 	{
 		unput('\n');
-		yylval->text = strdup(token->value.c_str());
+		yylval->token = new Token(*token);
 		return token->id;
 	}
 	previousTokens.reset();
@@ -282,15 +309,26 @@ STRONG                  "'''''"
   * Begin of block quote line.
   */
 <OPEN,LIST_MODE>">"+" " {
-	EMIT(TOK_OPEN_BLOCKQUOTE);
+	std::string temp = yytext;
+
+	size_t pos1 = temp.find_first_not_of(">");
+
+	EMIT_TEXT(TOK_OPEN_BLOCKQUOTE, "");
+	TOP()->counter = pos1;
 }
 
  /*
   * Empty block quote.
   */
 <OPEN,LIST_MODE>">"+{OWS}/{EOL} {
-	EMIT(TOK_OPEN_BLOCKQUOTE);
-	EMIT(TOK_EMPTY);
+	std::string temp = yytext;
+
+	size_t pos1 = temp.find_first_not_of(">");
+
+	EMIT_TEXT(TOK_OPEN_BLOCKQUOTE, "");
+	TOP()->counter = pos1;
+
+	EMIT_TEXT(TOK_EMPTY, "");
 	BEGIN(CONTENT);
 }
 
@@ -298,48 +336,40 @@ STRONG                  "'''''"
   * Continuation of the previous statement.
   */
 <OPEN>{CONTINUE} {
-	EMIT(TOK_OPEN_CONTINUATION);
-	//BEGIN(CONTENT);
+	EMIT_TEXT(TOK_OPEN_CONTINUATION, "");
 }
 
 
  /*
   * Begin of heading.
   */
-<OPEN,LIST_MODE>{HEADING} {
-	char *ptr = yytext;
-	while (*ptr != 0)
-	{
-		if (*ptr != '=')
-			*ptr = 0;
-		else
-			++ptr;
-	}
+<OPEN,LIST_MODE>"="+" "{OWS} {
+	std::string temp = yytext;
+
+	size_t pos1 = temp.find_first_not_of("=");
+
+	EMIT_TEXT(TOK_OPEN_HEADING, "");
+	TOP()->counter = pos1;
+
 	BEGIN(CONTENT);
-	EMIT(TOK_OPEN_HEADING);
-}
-
-
-<CONTENT>"="+{OWS}/{EOL} {
-	/* ignores the heading close */
 }
 
 
 <OPEN,LIST_MODE>{OWS}"---""-"+{OWS}/{EOL} {
-	EMIT(TOK_LINE);
+	EMIT_TEXT(TOK_LINE, "");
 	pending = currentTokens.process(previousTokens);
 	BEGIN(PENDING);
 }
 
 
 <OPEN>{UNORDERED_LIST}+" " {
-	EMIT(TOK_OPEN_UNORDERED_LIST);
+	EMIT_TEXT(TOK_OPEN_UNORDERED_LIST, "");
 	BEGIN(LIST_MODE);
 }
 
 
 <OPEN>{ORDERED_LIST}+" " {
-	EMIT(TOK_OPEN_ORDERED_LIST);
+	EMIT_TEXT(TOK_OPEN_ORDERED_LIST, "");
 	BEGIN(LIST_MODE);
 }
 
@@ -350,7 +380,7 @@ STRONG                  "'''''"
 <OPEN,LIST_MODE>. {
 	unput(yytext[0]);
 	BEGIN(CONTENT);
-	EMIT(TOK_OPEN_PARAGRAPH);
+	EMIT_TEXT(TOK_OPEN_PARAGRAPH, "");
 }
 
 
@@ -366,7 +396,7 @@ STRONG                  "'''''"
 	const Token *token = pending.getNext();
 	if (token != NULL)
 	{
-		yylval->text = strdup(token->value.c_str());
+		yylval->token = new Token(*token);
 		return token->id;
 	}
 	else
@@ -381,22 +411,19 @@ STRONG                  "'''''"
 }
 
 
-<CONTENT>"["/{TEXT}"]"{OWS}"("{OWS}{URL}{OWS}")" {
-	EMIT(TOK_OPEN_URL);
-	BEGIN(URL);
-}
+<CONTENT>"["{HYPERLINK}"]"{OWS}"("{ADDRESS}")" {
+	std::string hyperlink, address;
+	std::string value = yytext + 1;
 
-<URL>{TEXT}/"]" {
-	EMIT(TOK_TEXT);
-}
+	size_t pos = value.find_first_of("]");
+	hyperlink = value.substr(0, pos);
+	pos = value.find_first_of("(", pos + 1);
+	address = value.substr(pos + 1, value.length() - pos - 2);
 
-<URL>{URL}/")" {
-	EMIT(TOK_TEXT);
-}
-
-<URL>")" {
-	EMIT(TOK_CLOSE_URL);
-	BEGIN(CONTENT);
+	EMIT_TEXT(TOK_OPEN_URL, "");
+	EMIT_TEXT(TOK_TEXT, markdowntown_trim(hyperlink));
+	EMIT_TEXT(TOK_TEXT, markdowntown_trim(address));
+	EMIT_TEXT(TOK_CLOSE_URL, "");
 }
 
 
@@ -406,22 +433,14 @@ STRONG                  "'''''"
 
 
 <CONTENT>"`"+[^`\n]+"`"+ {
-	int length = strlen(yytext);
+	std::string temp = yytext;
 
-	// computes the level
-	int level = 0;
-	char *ptr = yytext;
-	for (; *ptr == '`'; ++ptr)
-	{
-		// *ptr = ' ';
-		++level;
-	}
+	size_t pos1 = temp.find_first_not_of("`");
+	size_t pos2 = temp.find_first_of("`", pos1);
+	temp = temp.substr(pos1, pos2 - pos1);
 
-	for (; *ptr != '`' && *ptr != 0; ++ptr);
-
-	*ptr = 0;
-
-	EMIT(TOK_CODE);
+	EMIT_TEXT(TOK_CODE, temp);
+	TOP()->counter = pos1;
 }
 
 <CONTENT>"{{{" {
@@ -448,38 +467,45 @@ STRONG                  "'''''"
 	}
 }
 
-<CONTENT>{TEXT}                          { EMIT(TOK_TEXT); }
-
 <CONTENT>"{{" {
-	EMIT(TOK_OPEN_MACRO);
+	EMIT_TEXT(TOK_OPEN_MACRO, "");
 	BEGIN(MACRO);
 }
 
 <MACRO>{OWS}{IDENTIFIER}{OWS} {
-	EMIT(TOK_MACRO_IDENTIFIER);
+	EMIT_TEXT(TOK_MACRO_IDENTIFIER, yytext);
 }
 
 <MACRO>"|" |
 <MACRO_PARAM>"|" {
-	EMIT(TOK_MACRO_PIPE);
+	EMIT_TEXT(TOK_MACRO_PIPE, "");
 	BEGIN(MACRO_PARAM);
 }
 
 <MACRO_PARAM>"="{VALUE} {
 	yytext[0] = ' ';
-	EMIT(TOK_MACRO_VALUE);
+	EMIT_TEXT(TOK_MACRO_VALUE, markdowntown_trim(yytext));
 }
 
 <MACRO_PARAM>{OWS}{IDENTIFIER}{OWS} {
-	EMIT(TOK_MACRO_IDENTIFIER);
+	EMIT_TEXT(TOK_MACRO_IDENTIFIER, markdowntown_trim(yytext));
 }
 
 <MACRO>"}}" |
 <MACRO_PARAM>"}}" {
-	EMIT(TOK_CLOSE_MACRO);
+	EMIT_TEXT(TOK_CLOSE_MACRO, "");
 	BEGIN(CONTENT);
 }
 
 
-<CONTENT>.                               { EMIT(TOK_TEXT); }
-
+<CONTENT>. {
+	Token *top = TOP();
+	if (top == NULL || top->id != TOK_TEXT)
+	{
+		EMIT_TEXT(TOK_TEXT, yytext);
+	}
+	else
+	{
+		top->value += yytext;
+	}
+}

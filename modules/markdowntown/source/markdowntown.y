@@ -13,6 +13,7 @@
 #include <sstream>
 #include <vector>
 #include <markdowntown/Node.hh>
+#include "Token.hh"
 
 
 /*
@@ -83,7 +84,7 @@ static markdowntown::Node* markdowntown_combine( std::vector<markdowntown::Node*
 	if (n == 0 || (int) stack.size() < n) return NULL;
 
 	if (tok > 0 )
-		temp = new markdowntown::Node(tok, NULL);
+		temp = new markdowntown::Node(tok);
 	else
 	{
 		if ((int) stack.size() <= n) return NULL;
@@ -112,16 +113,21 @@ static void markdowntown_printStack( std::vector<markdowntown::Node*> &stack  )
 
 static void markdowntown_push(
 	parser_context_t *context,
-	int token,
-	const char *value,
+	int type,
+	const Token *token = NULL,
 	uint32_t line = 1,
 	uint32_t column = 1 )
 {
 	//std::cout << "PUSH " << value << std::endl;
 	markdowntown::Node *node;
-	node = new markdowntown::Node(token,value);
+	if (token != NULL)
+		node = new markdowntown::Node(type, token->value);
+	else
+		node = new markdowntown::Node(type);
+
 	node->line = line;
 	node->column = column;
+	node->counter = (token != NULL) ? token->counter : 0;
 	context->stack.push_back(node);
 }
 
@@ -143,8 +149,27 @@ static void markdowntown_push(
 
 
 #define scanner              parserContext->lexer
-#define PUSH(token,value)    markdowntown_push( parserContext, (token), (value), \
-	markdowntown_get_lineno(parserContext->lexer), markdowntown_get_column(parserContext->lexer) )
+
+#define PUSH_TOKEN(id, token)                                  \
+	{                                                          \
+		markdowntown_push(                                     \
+			parserContext,                                     \
+			(id),                                              \
+			(token),                                           \
+			markdowntown_get_lineno(parserContext->lexer),     \
+			markdowntown_get_column(parserContext->lexer) );   \
+	}
+
+#define PUSH(id)                                               \
+	{                                                          \
+		markdowntown_push(                                     \
+			parserContext,                                     \
+			(id),                                              \
+			NULL,                                              \
+			markdowntown_get_lineno(parserContext->lexer),     \
+			markdowntown_get_column(parserContext->lexer) );   \
+	}
+
 #define NPUSH(node)          markdowntown_push( parserContext, (node) )
 #define POP()                markdowntown_pop(parserContext->stack)
 #define TOP()                (parserContext->stack[ parserContext->stack.size() - 1 ])
@@ -173,45 +198,45 @@ static void markdowntown_push(
  * %union declares of what kinds of values appear on the value stack
  */
 %union {
-	char *text;
+	Token *token;
 }
 
 
-%token <text> TOK_CODE
-%token <text> TOK_TEXT
-%token <text> TOK_HASHTAG
-%token <text> TOK_SM
-%token <text> TOK_COLON
-%token <text> TOK_BOL
-%token <text> TOK_OPEN_BLOCKQUOTE
-%token <text> TOK_OPEN_PARAGRAPH
-%token <text> TOK_OPEN_HEADING
-%token <text> TOK_OPEN_BOLD
-%token <text> TOK_OPEN_ITALIC
-%token <text> TOK_OPEN_STRONG
-%token <text> TOK_OPEN_UNORDERED_LIST
-%token <text> TOK_OPEN_ORDERED_LIST
-%token <text> TOK_OPEN_URL
-%token <text> TOK_OPEN_CONTINUATION
-%token <text> TOK_OPEN_MACRO
-%token <text> TOK_CLOSE_BLOCKQUOTE
-%token <text> TOK_CLOSE_PARAGRAPH
-%token <text> TOK_CLOSE_HEADING
-%token <text> TOK_CLOSE_BOLD
-%token <text> TOK_CLOSE_ITALIC
-%token <text> TOK_CLOSE_STRONG
-%token <text> TOK_CLOSE_UNORDERED_LIST
-%token <text> TOK_CLOSE_ORDERED_LIST
-%token <text> TOK_CLOSE_URL
-%token <text> TOK_CLOSE_CONTINUATION
-%token <text> TOK_CLOSE_MACRO
-%token <text> TOK_LINE
-%token <text> TOK_RAW_TEXT
-%token <text> TOK_MACRO
-%token <text> TOK_MACRO_IDENTIFIER
-%token <text> TOK_MACRO_VALUE
-%token <text> TOK_MACRO_PIPE
-%token <text> TOK_EMPTY
+%token <token> TOK_CODE
+%token <token> TOK_TEXT
+%token <token> TOK_HASHTAG
+%token <token> TOK_SM
+%token <token> TOK_COLON
+%token <token> TOK_BOL
+%token <token> TOK_OPEN_BLOCKQUOTE
+%token <token> TOK_OPEN_PARAGRAPH
+%token <token> TOK_OPEN_HEADING
+%token <token> TOK_OPEN_BOLD
+%token <token> TOK_OPEN_ITALIC
+%token <token> TOK_OPEN_STRONG
+%token <token> TOK_OPEN_UNORDERED_LIST
+%token <token> TOK_OPEN_ORDERED_LIST
+%token <token> TOK_OPEN_URL
+%token <token> TOK_OPEN_CONTINUATION
+%token <token> TOK_OPEN_MACRO
+%token <token> TOK_CLOSE_BLOCKQUOTE
+%token <token> TOK_CLOSE_PARAGRAPH
+%token <token> TOK_CLOSE_HEADING
+%token <token> TOK_CLOSE_BOLD
+%token <token> TOK_CLOSE_ITALIC
+%token <token> TOK_CLOSE_STRONG
+%token <token> TOK_CLOSE_UNORDERED_LIST
+%token <token> TOK_CLOSE_ORDERED_LIST
+%token <token> TOK_CLOSE_URL
+%token <token> TOK_CLOSE_CONTINUATION
+%token <token> TOK_CLOSE_MACRO
+%token <token> TOK_LINE
+%token <token> TOK_RAW_TEXT
+%token <token> TOK_MACRO
+%token <token> TOK_MACRO_IDENTIFIER
+%token <token> TOK_MACRO_VALUE
+%token <token> TOK_MACRO_PIPE
+%token <token> TOK_EMPTY
 
 
 %start CompilationUnit
@@ -245,12 +270,12 @@ BlockEntry:
 
 Empty:
 	TOK_EMPTY
-	{ PUSH(NTY_EMPTY, NULL); }
+	{ PUSH(NTY_EMPTY); }
 	;
 
 Heading:
 	TOK_OPEN_HEADING Text TOK_CLOSE_HEADING
-	{ TOP()->type = NTY_HEADING; TOP()->counter = (int) strlen($1); std::cerr << "-----" << $1 << "-----" << std::endl; }
+	{ TOP()->type = NTY_HEADING; TOP()->counter = $1->counter; }
 	;
 
 Paragraph:
@@ -260,7 +285,7 @@ Paragraph:
 
 BlockQuote:
 	TOK_OPEN_BLOCKQUOTE Block TOK_CLOSE_BLOCKQUOTE
-	{ TOP()->type = NTY_BLOCKQUOTE; }
+	{ TOP()->type = NTY_BLOCKQUOTE; TOP()->counter = $1->counter; }
 	;
 
 UnorderedList:
@@ -280,7 +305,7 @@ Continuation:
 
 HorizontalLine:
 	TOK_LINE
-	{ PUSH(NTY_LINE, $1); }
+	{ PUSH_TOKEN(NTY_LINE, $1); }
 	;
 
 
@@ -304,17 +329,17 @@ TextEntry:
 
 SimpleText:
 	TOK_TEXT
-	{ PUSH(NTY_TEXT, $1); }
+	{ PUSH_TOKEN(NTY_TEXT, $1); }
 	;
 
 Identifier:
 	TOK_MACRO_IDENTIFIER
-	{ PUSH(NTY_MACRO_IDENTIFIER, $1); }
+	{ PUSH_TOKEN(NTY_MACRO_IDENTIFIER, $1); }
 	;
 
 RawText:
 	TOK_RAW_TEXT
-	{ PUSH(NTY_RAW_TEXT, $1); }
+	{ PUSH_TOKEN(NTY_RAW_TEXT, $1); }
 	;
 
 BoldText:
@@ -335,15 +360,7 @@ StrongText:
 InlineCode:
 	TOK_CODE
 	{
-		std::string value($1);
-		size_t pos = value.find_first_not_of("`");
-		if (pos != std::string::npos)
-			value = value.substr(pos);
-		else
-			pos = 1;
-
-		PUSH(NTY_CODE, value.c_str());
-		TOP()->counter = (int) pos;
+		PUSH_TOKEN(NTY_CODE, $1);
 	}
 	;
 
@@ -355,7 +372,7 @@ InlineUrl:
 Macro:
 	TOK_OPEN_MACRO Identifier TOK_CLOSE_MACRO
 	{
-		PUSH(NTY_MACRO_PARAM_LIST, NULL);
+		PUSH(NTY_MACRO_PARAM_LIST);
 		COMBINE(NTY_MACRO, 2);
 	}
 	| TOK_OPEN_MACRO Identifier TOK_MACRO_PIPE MacroParameterList TOK_CLOSE_MACRO
@@ -372,14 +389,14 @@ MacroParameterList:
 MacroParameter:
 	TOK_MACRO_IDENTIFIER
 	{
-		PUSH(NTY_MACRO_IDENTIFIER, $1);
-		PUSH(NTY_MACRO_VALUE, NULL);
+		PUSH_TOKEN(NTY_MACRO_IDENTIFIER, $1);
+		PUSH(NTY_MACRO_VALUE);
 		COMBINE(NTY_MACRO_PARAM, 2);
 	}
 	| TOK_MACRO_IDENTIFIER TOK_MACRO_VALUE
 		{
-		PUSH(NTY_MACRO_IDENTIFIER, $1);
-		PUSH(NTY_MACRO_VALUE, $2);
+		PUSH_TOKEN(NTY_MACRO_IDENTIFIER, $1);
+		PUSH_TOKEN(NTY_MACRO_VALUE, $2);
 		COMBINE(NTY_MACRO_PARAM, 2);
 	}
 	;

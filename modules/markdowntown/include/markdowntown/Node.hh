@@ -48,8 +48,11 @@ class Node
 		Node *parent;
 
 		Node(
+			int type );
+
+		Node(
 			int type,
-			const char *text = NULL);
+			const std::string &text );
 
 		virtual ~Node();
 
