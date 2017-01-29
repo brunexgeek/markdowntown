@@ -16,6 +16,9 @@
 #include "Token.hh"
 
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
+
 /*
  * The parser needs to know about the 'yyscan_t' type,
  * but the generated header by Flex don't provide this information.
@@ -59,11 +62,10 @@ using namespace markdowntown;
 
 static void markdowntown_error(parser_context_t *context, const char *msg)
 {
-	printf ("%s:%d:%d: error: %s\n",
-		context->fileName,
-		markdowntown_get_lineno(context->lexer),
-		markdowntown_get_column(context->lexer),
-		msg);
+	std::cerr << context->fileName << ":"
+		<< markdowntown_get_lineno(context->lexer) << ":"
+		<< markdowntown_get_column(context->lexer) << ": error: "
+		<< msg << std::endl;
 	return;
 }
 
@@ -175,6 +177,8 @@ static void markdowntown_push(
 #define TOP()                (parserContext->stack[ parserContext->stack.size() - 1 ])
 #define COMBINE(tok,n)       markdowntown_combine(parserContext->stack, (tok), (n))
 #define PSTACK()             markdowntown_printStack(parserContext->stack, parserContext->parser)
+
+#pragma GCC diagnostic ignored "-Wconversion"
 
 }
 
@@ -387,10 +391,10 @@ MacroParameterList:
 	;
 
 MacroParameter:
-	TOK_MACRO_IDENTIFIER
+	TOK_MACRO_VALUE
 	{
-		PUSH_TOKEN(NTY_MACRO_IDENTIFIER, $1);
-		PUSH(NTY_MACRO_VALUE);
+		PUSH(NTY_MACRO_IDENTIFIER);
+		PUSH_TOKEN(NTY_MACRO_VALUE, $1);
 		COMBINE(NTY_MACRO_PARAM, 2);
 	}
 	| TOK_MACRO_IDENTIFIER TOK_MACRO_VALUE

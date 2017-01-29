@@ -248,7 +248,7 @@ void HtmlExporter::findCSS(
 			if (item->type == NTY_MACRO && item->first()->text == "StyleSheet")
 			{
 				Macro macro(*item);
-				css.push_back( macro.getParameter("href") );
+				css.push_back( macro.getParameter("href", 0) );
 			}
 		}
 		current = current->next();

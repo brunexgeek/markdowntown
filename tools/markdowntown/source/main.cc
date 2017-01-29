@@ -29,6 +29,8 @@ int main( int argc, char **argv )
 			HtmlExporter exporter;
 			exporter.write( std::cout, *compiler.getTree() );
 		}
+
+		return 0;
 	}
 
 	return 1;

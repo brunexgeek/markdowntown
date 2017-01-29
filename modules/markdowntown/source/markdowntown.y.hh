@@ -52,6 +52,9 @@ extern int markdowntown_debug;
 #include "Token.hh"
 
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
+
 /*
  * The parser needs to know about the 'yyscan_t' type,
  * but the generated header by Flex don't provide this information.
@@ -83,7 +86,7 @@ const char *markdowntown_get_token_name( int tok );
 
 
 
-#line 87 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 90 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -133,11 +136,11 @@ const char *markdowntown_get_token_name( int tok );
 
 union YYSTYPE
 {
-#line 200 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1909  */
+#line 204 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1909  */
 
 	Token *token;
 
-#line 141 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
+#line 144 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

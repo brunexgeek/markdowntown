@@ -10,9 +10,6 @@
 #include "Token.hh"
 
 
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wsign-compare"
-
 enum StatementType
 {
 	STATE_BOLD,
@@ -229,6 +226,9 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 	}
 
 #define ECHO
+
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wsign-compare"
 
 %}
 
@@ -483,13 +483,31 @@ STRONG                  "'''''"
 	BEGIN(MACRO_PARAM);
 }
 
-<MACRO_PARAM>"="{VALUE} {
-	yytext[0] = ' ';
-	EMIT_TEXT(TOK_MACRO_VALUE, markdowntown_trim(yytext));
+<MACRO_PARAM>[^|}]+ {
+	std::string content = yytext;
+	size_t pos = content.find_first_of("=");
+	if (pos == std::string::npos)
+	{
+		EMIT_TEXT(TOK_MACRO_IDENTIFIER, "");
+		EMIT_TEXT(TOK_MACRO_VALUE, markdowntown_trim(content));
+	}
+	else
+	{
+		std::string name = content.substr(0, pos);
+		if (pos == content.length() - 1)
+			content = "";
+		else
+			content = content.substr(pos + 1);
+
+		EMIT_TEXT(TOK_MACRO_IDENTIFIER, name);
+		EMIT_TEXT(TOK_MACRO_VALUE, content);
+	}
+
 }
 
-<MACRO_PARAM>{OWS}{IDENTIFIER}{OWS} {
-	EMIT_TEXT(TOK_MACRO_IDENTIFIER, markdowntown_trim(yytext));
+<MACRO_PARAM>{OWS}{IDENTIFIER}{OWS}"=" {
+	yytext[ strlen(yytext) - 1 ] = ' ';
+
 }
 
 <MACRO>"}}" |

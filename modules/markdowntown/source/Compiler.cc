@@ -164,6 +164,8 @@ ESCAPE2:
 ESCAPE1:
 	markdowntown_lex_destroy(scanner);
 
+	if (!result) root = NULL;
+
 	return result;
 }
 
