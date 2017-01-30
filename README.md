@@ -64,7 +64,7 @@ A blockquote is closed when you put an empty line or another statement after it.
 
 ### Lists
 
-Markdowntown offers two types of lists: ordered and unordered. Ordered lists starts with asterisk (*) and are converted to HTML `ol` elements. Unordered lists starts with sharp (#) and are converted to HTML `ul` elements. You can insert many statements inside a list entry using **continuation**: start the list item in one line and start the next line with a tabulation or four spaces. You can create many levels of continuation.
+Markdowntown offers two types of lists: ordered and unordered. Ordered lists starts with asterisk (\*) and are converted to HTML `ol` elements. Unordered lists starts with sharp (#) and are converted to HTML `ul` elements. You can insert many statements inside a list entry using **continuation**: start the list item in one line and start the next line with a tabulation or four spaces. You can create many levels of continuation.
 
     * List item
         * Another list item
@@ -104,7 +104,7 @@ Insert a HTML `span` element using the given CSS classes and containing the spec
 
 ### Raw text
 
-This feature allows you to insert raw content in the HTML output. You can use it to insert custom HTML statements (e.g. `div`, scripts, inline stylesheets, stc).
+This feature allows you to insert raw content in the HTML output. You can use it to insert custom HTML statements (e.g. `div`, scripts, inline stylesheets, etc).
 
     = Raw text example
 
