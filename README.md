@@ -19,7 +19,7 @@ This way you will compile the static library `libmarkdowntown` and the tool `mar
 
 To process a document, use the tool `markdowntown` as follows:
 
-    # ./markdowntown document.txt > document.htm
+    # ./markdowntown -i document.mdt -o document.html
 
 If the input file contains any syntax errors, the tool will print some information in the screen (`stderr`).
 

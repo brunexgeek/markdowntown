@@ -595,9 +595,9 @@ static yyconst flex_int16_t yy_chk[209] =
 
 static yyconst flex_int16_t yy_rule_linenum[27] =
     {   0,
-      281,  288,  293,  311,  323,  338,  346,  358,  365,  371,
-      380,  407,  414,  430,  431,  432,  435,  446,  471,  476,
-      480,  481,  486,  508,  509,  515
+      137,  146,  151,  169,  181,  196,  204,  216,  225,  231,
+      240,  269,  278,  294,  295,  296,  299,  310,  335,  340,
+      344,  345,  350,  372,  373,  379
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -617,7 +617,10 @@ static yyconst flex_int16_t yy_rule_linenum[27] =
 #include <fstream>
 #include <iostream>
 #include "markdowntown.y.hh"
-#include "Token.hh"
+#include "TokenList.hh"
+
+
+using namespace markdowntown;
 
 
 enum StatementType
@@ -627,155 +630,6 @@ enum StatementType
 	STATE_STRONG,
 	STATE_CODE
 };
-
-
-static bool statements[4] = { false };
-
-
-class TokenList
-{
-	public:
-		std::vector<Token> entries;
-
-		int index;
-
-		TokenList() : index(-1)
-		{
-		}
-
-		const Token *getNext()
-		{
-			if (index < 0 || index >= (int) entries.size()) return NULL;
-			return &entries[index++];
-		}
-
-		TokenList process( const TokenList &object )
-		{
-			TokenList output;
-
-			int temp = index;
-			index = 0;
-			bool listMode = false;
-
-			while (index < (int) entries.size())
-			{
-				if (index >= (int) object.entries.size())
-				{
-					output.add( entries[index++] );
-					continue;
-				}
-
-				const Token &current  = entries[index];
-				const Token &previous = object.entries[index];
-
-//std::cerr << markdowntown_get_token_name(current.id) << " != " << markdowntown_get_token_name(previous.id) << "?\n";
-
-				// always close the last level of a list
-				if ((current.id == TOK_OPEN_ORDERED_LIST || current.id == TOK_OPEN_UNORDERED_LIST) &&
-					previous.id == current.id)
-					listMode = true;
-				else
-				if (listMode)
-				{
-					--index;
-					break;
-				}
-
-				if (current.id != previous.id)
-					break;
-
-				// always close paragraphs
-				if (current.id == TOK_OPEN_PARAGRAPH || previous.id == TOK_OPEN_PARAGRAPH)
-					break;
-
-				// always close headings
-				if (current.id == TOK_OPEN_HEADING || previous.id == TOK_OPEN_HEADING)
-					break;
-
-				index++;
-			}
-
-			// close the remaining tokens from previous
-			for (int i = (int)object.entries.size() - 1; i >= index; --i)
-			{
-				int id = closeToken( object.entries[i] );
-				if (id >= 0) output.add( Token(id, "") );
-			}
-
-			// output the remaining tokens from current
-			for (int i = index; i < (int)entries.size(); ++i)
-				output.add( entries[i] );
-			index = temp;
-
-			return output;
-		}
-
-		void add( const Token &token )
-		{
-			entries.push_back( token );
-			if (index < 0) index = 0;
-		}
-
-		void reset()
-		{
-			entries.clear();
-			index = -1;
-		}
-
-		bool hasNext()
-		{
-			return (index >= 0 && index < (int) entries.size());
-		}
-
-		void swap( TokenList &object )
-		{
-			object.entries.swap(entries);
-			int i = object.index;
-			object.index = index;
-			index = i;
-		}
-
-		Token * last()
-		{
-			if (entries.size() > 0)
-				return &entries[ entries.size() - 1 ];
-			else
-				return NULL;
-		}
-
-		/*
-		 * Returns the closing token for statements whose do not have
-		 * an explicit closing representation.
-		 */
-		int closeToken( const Token &token )
-		{
-			switch (token.id)
-			{
-				case TOK_OPEN_BLOCKQUOTE:
-					return TOK_CLOSE_BLOCKQUOTE;
-				case TOK_OPEN_PARAGRAPH:
-					return TOK_CLOSE_PARAGRAPH;
-				case TOK_OPEN_HEADING:
-					return TOK_CLOSE_HEADING;
-				case TOK_OPEN_UNORDERED_LIST:
-					return TOK_CLOSE_UNORDERED_LIST;
-				case TOK_OPEN_ORDERED_LIST:
-					return TOK_CLOSE_ORDERED_LIST;
-				case TOK_OPEN_CONTINUATION:
-					return TOK_CLOSE_CONTINUATION;
-				default:
-					return -1;
-			}
-		}
-
-};
-
-
-static TokenList pending;
-
-static TokenList currentTokens;
-
-static TokenList previousTokens;
 
 
 static const std::string markdowntown_trim(
@@ -816,23 +670,25 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 }
 
 
+#define CONTEXT() ( (LexerContext*) markdowntown_get_extra(yyscanner) )
+
 #define EMIT(id) \
 	{                                                                                  \
-		currentTokens.add( Token((id), markdowntown_getTokenText( (id), yytext ) ) );  \
+		CONTEXT()->currentTokens.add( Token((id), markdowntown_getTokenText( (id), yytext ) ) );  \
 	}
 
 #define EMIT_TEXT(id, text)                            \
 	{                                                  \
-		currentTokens.add( Token( (id), (text) ) );    \
+		CONTEXT()->currentTokens.add( new Token( (id), (text) ) );    \
 	}
 
-#define TOP() ( currentTokens.last() )
+#define TOP() ( CONTEXT()->currentTokens.last() )
 
 #define EMIT_TOGGLE(variable, tokTrue, tokFalse) \
 	{ \
 		variable = !variable; \
 		int id = (variable) ? tokTrue : tokFalse; \
-		currentTokens.add( Token((id), "none" ) ); \
+		CONTEXT()->currentTokens.add( new Token((id), "none" ) ); \
 	}
 
 #define ECHO
@@ -855,7 +711,7 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 
 
 
-#line 859 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 715 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 #define INITIAL 0
 #define PENDING 1
@@ -1210,11 +1066,11 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
-#line 278 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 134 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 
 
 
-#line 1218 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 1074 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1297,16 +1153,18 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 281 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 137 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_EMPTY, "");
-	pending = currentTokens.process(previousTokens);
+	CONTEXT()->currentTokens.process(
+		CONTEXT()->previousTokens,
+		CONTEXT()->pending);
 	BEGIN(PENDING);
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 288 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 146 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	BEGIN(OPEN);
 }
@@ -1314,18 +1172,18 @@ YY_RULE_SETUP
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 293 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 151 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
-	const Token *token = pending.getNext();
+	Token *token = CONTEXT()->pending.getNext();
 	if (token != NULL)
 	{
 		unput('\n');
-		yylval->token = new Token(*token);
+		yylval->token = token;
 		return token->id;
 	}
-	previousTokens.reset();
-	currentTokens.swap(previousTokens);
-	pending.reset();
+	CONTEXT()->previousTokens.reset();
+	CONTEXT()->currentTokens.swap(CONTEXT()->previousTokens);
+	CONTEXT()->pending.reset();
 	BEGIN(INITIAL);
 }
 	YY_BREAK
@@ -1334,7 +1192,7 @@ YY_RULE_SETUP
   */
 case 4:
 YY_RULE_SETUP
-#line 311 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 169 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	std::string temp = yytext;
 
@@ -1354,7 +1212,7 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 323 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 181 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	std::string temp = yytext;
 
@@ -1372,7 +1230,7 @@ YY_RULE_SETUP
   */
 case 6:
 YY_RULE_SETUP
-#line 338 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 196 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_OPEN_CONTINUATION, "");
 }
@@ -1382,7 +1240,7 @@ YY_RULE_SETUP
   */
 case 7:
 YY_RULE_SETUP
-#line 346 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 204 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	std::string temp = yytext;
 
@@ -1401,16 +1259,18 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 358 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 216 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_LINE, "");
-	pending = currentTokens.process(previousTokens);
+	CONTEXT()->currentTokens.process(
+		CONTEXT()->previousTokens,
+		CONTEXT()->pending);
 	BEGIN(PENDING);
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 365 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 225 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_OPEN_UNORDERED_LIST, "");
 	BEGIN(LIST_MODE);
@@ -1418,7 +1278,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 371 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 231 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_OPEN_ORDERED_LIST, "");
 	BEGIN(LIST_MODE);
@@ -1429,7 +1289,7 @@ YY_RULE_SETUP
   */
 case 11:
 YY_RULE_SETUP
-#line 380 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 240 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	unput(yytext[0]);
 	BEGIN(CONTENT);
@@ -1445,20 +1305,22 @@ case YY_STATE_EOF(CONTINUATION):
 case YY_STATE_EOF(MACRO):
 case YY_STATE_EOF(MACRO_PARAM):
 case YY_STATE_EOF(LIST_MODE):
-#line 387 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 247 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
-	if (!pending.hasNext())
+	if (!CONTEXT()->pending.hasNext())
 	{
-		pending = currentTokens.process(previousTokens);
+		CONTEXT()->currentTokens.process(
+			CONTEXT()->previousTokens,
+			CONTEXT()->pending);
 		// clean up things to avoid an infinity loop here
-		previousTokens.reset();
-		currentTokens.reset();
+		CONTEXT()->previousTokens.reset();
+		CONTEXT()->currentTokens.reset();
 	}
 
-	const Token *token = pending.getNext();
+	Token *token = CONTEXT()->pending.getNext();
 	if (token != NULL)
 	{
-		yylval->token = new Token(*token);
+		yylval->token = token;
 		return token->id;
 	}
 	else
@@ -1468,16 +1330,18 @@ case YY_STATE_EOF(LIST_MODE):
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 407 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 269 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	unput('\n');
-	pending = currentTokens.process(previousTokens);
+	CONTEXT()->currentTokens.process(
+		CONTEXT()->previousTokens,
+		CONTEXT()->pending);
 	BEGIN(PENDING);
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 414 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 278 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	std::string hyperlink, address;
 	std::string value = yytext + 1;
@@ -1495,22 +1359,22 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 430 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT_TOGGLE(statements[STATE_STRONG], TOK_OPEN_STRONG, TOK_CLOSE_STRONG ); }
+#line 294 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT_TOGGLE(CONTEXT()->statements[STATE_STRONG], TOK_OPEN_STRONG, TOK_CLOSE_STRONG ); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 431 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT_TOGGLE(statements[STATE_BOLD],   TOK_OPEN_BOLD,   TOK_CLOSE_BOLD   ); }
+#line 295 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT_TOGGLE(CONTEXT()->statements[STATE_BOLD],   TOK_OPEN_BOLD,   TOK_CLOSE_BOLD   ); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 432 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
-{ EMIT_TOGGLE(statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
+#line 296 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+{ EMIT_TOGGLE(CONTEXT()->statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 435 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 299 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	std::string temp = yytext;
 
@@ -1524,7 +1388,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 446 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 310 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	int count = 0;
 	int current = 0;
@@ -1552,7 +1416,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 471 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 335 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_OPEN_MACRO, "");
 	BEGIN(MACRO);
@@ -1560,16 +1424,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 476 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 340 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_MACRO_IDENTIFIER, yytext);
 }
 	YY_BREAK
 case 21:
-#line 481 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 345 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 case 22:
 YY_RULE_SETUP
-#line 481 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 345 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_MACRO_PIPE, "");
 	BEGIN(MACRO_PARAM);
@@ -1578,7 +1442,7 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 486 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 350 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	std::string content = yytext;
 	size_t pos = content.find_first_of("=");
@@ -1601,10 +1465,10 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case 24:
-#line 509 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 373 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 case 25:
 YY_RULE_SETUP
-#line 509 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 373 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	EMIT_TEXT(TOK_CLOSE_MACRO, "");
 	BEGIN(CONTENT);
@@ -1612,7 +1476,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 515 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 379 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 {
 	Token *top = TOP();
 	if (top == NULL || top->id != TOK_TEXT)
@@ -1627,10 +1491,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 526 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 390 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
 ECHO;
 	YY_BREAK
-#line 1634 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
+#line 1498 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2960,4 +2824,4 @@ void markdowntown_free (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 526 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"
+#line 390 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.l"

@@ -7,7 +7,10 @@
 #include <fstream>
 #include <iostream>
 #include "markdowntown.y.hh"
-#include "Token.hh"
+#include "TokenList.hh"
+
+
+using namespace markdowntown;
 
 
 enum StatementType
@@ -17,155 +20,6 @@ enum StatementType
 	STATE_STRONG,
 	STATE_CODE
 };
-
-
-static bool statements[4] = { false };
-
-
-class TokenList
-{
-	public:
-		std::vector<Token> entries;
-
-		int index;
-
-		TokenList() : index(-1)
-		{
-		}
-
-		const Token *getNext()
-		{
-			if (index < 0 || index >= (int) entries.size()) return NULL;
-			return &entries[index++];
-		}
-
-		TokenList process( const TokenList &object )
-		{
-			TokenList output;
-
-			int temp = index;
-			index = 0;
-			bool listMode = false;
-
-			while (index < (int) entries.size())
-			{
-				if (index >= (int) object.entries.size())
-				{
-					output.add( entries[index++] );
-					continue;
-				}
-
-				const Token &current  = entries[index];
-				const Token &previous = object.entries[index];
-
-//std::cerr << markdowntown_get_token_name(current.id) << " != " << markdowntown_get_token_name(previous.id) << "?\n";
-
-				// always close the last level of a list
-				if ((current.id == TOK_OPEN_ORDERED_LIST || current.id == TOK_OPEN_UNORDERED_LIST) &&
-					previous.id == current.id)
-					listMode = true;
-				else
-				if (listMode)
-				{
-					--index;
-					break;
-				}
-
-				if (current.id != previous.id)
-					break;
-
-				// always close paragraphs
-				if (current.id == TOK_OPEN_PARAGRAPH || previous.id == TOK_OPEN_PARAGRAPH)
-					break;
-
-				// always close headings
-				if (current.id == TOK_OPEN_HEADING || previous.id == TOK_OPEN_HEADING)
-					break;
-
-				index++;
-			}
-
-			// close the remaining tokens from previous
-			for (int i = (int)object.entries.size() - 1; i >= index; --i)
-			{
-				int id = closeToken( object.entries[i] );
-				if (id >= 0) output.add( Token(id, "") );
-			}
-
-			// output the remaining tokens from current
-			for (int i = index; i < (int)entries.size(); ++i)
-				output.add( entries[i] );
-			index = temp;
-
-			return output;
-		}
-
-		void add( const Token &token )
-		{
-			entries.push_back( token );
-			if (index < 0) index = 0;
-		}
-
-		void reset()
-		{
-			entries.clear();
-			index = -1;
-		}
-
-		bool hasNext()
-		{
-			return (index >= 0 && index < (int) entries.size());
-		}
-
-		void swap( TokenList &object )
-		{
-			object.entries.swap(entries);
-			int i = object.index;
-			object.index = index;
-			index = i;
-		}
-
-		Token * last()
-		{
-			if (entries.size() > 0)
-				return &entries[ entries.size() - 1 ];
-			else
-				return NULL;
-		}
-
-		/*
-		 * Returns the closing token for statements whose do not have
-		 * an explicit closing representation.
-		 */
-		int closeToken( const Token &token )
-		{
-			switch (token.id)
-			{
-				case TOK_OPEN_BLOCKQUOTE:
-					return TOK_CLOSE_BLOCKQUOTE;
-				case TOK_OPEN_PARAGRAPH:
-					return TOK_CLOSE_PARAGRAPH;
-				case TOK_OPEN_HEADING:
-					return TOK_CLOSE_HEADING;
-				case TOK_OPEN_UNORDERED_LIST:
-					return TOK_CLOSE_UNORDERED_LIST;
-				case TOK_OPEN_ORDERED_LIST:
-					return TOK_CLOSE_ORDERED_LIST;
-				case TOK_OPEN_CONTINUATION:
-					return TOK_CLOSE_CONTINUATION;
-				default:
-					return -1;
-			}
-		}
-
-};
-
-
-static TokenList pending;
-
-static TokenList currentTokens;
-
-static TokenList previousTokens;
 
 
 static const std::string markdowntown_trim(
@@ -206,23 +60,25 @@ static const char *markdowntown_getTokenText( int tok, const char *text )
 }
 
 
+#define CONTEXT() ( (LexerContext*) markdowntown_get_extra(yyscanner) )
+
 #define EMIT(id) \
 	{                                                                                  \
-		currentTokens.add( Token((id), markdowntown_getTokenText( (id), yytext ) ) );  \
+		CONTEXT()->currentTokens.add( Token((id), markdowntown_getTokenText( (id), yytext ) ) );  \
 	}
 
 #define EMIT_TEXT(id, text)                            \
 	{                                                  \
-		currentTokens.add( Token( (id), (text) ) );    \
+		CONTEXT()->currentTokens.add( new Token( (id), (text) ) );    \
 	}
 
-#define TOP() ( currentTokens.last() )
+#define TOP() ( CONTEXT()->currentTokens.last() )
 
 #define EMIT_TOGGLE(variable, tokTrue, tokFalse) \
 	{ \
 		variable = !variable; \
 		int id = (variable) ? tokTrue : tokFalse; \
-		currentTokens.add( Token((id), "none" ) ); \
+		CONTEXT()->currentTokens.add( new Token((id), "none" ) ); \
 	}
 
 #define ECHO
@@ -280,7 +136,9 @@ STRONG                  "'''''"
 
 {BOL}{OWS}/{EOL} {
 	EMIT_TEXT(TOK_EMPTY, "");
-	pending = currentTokens.process(previousTokens);
+	CONTEXT()->currentTokens.process(
+		CONTEXT()->previousTokens,
+		CONTEXT()->pending);
 	BEGIN(PENDING);
 }
 
@@ -291,16 +149,16 @@ STRONG                  "'''''"
 
 
 <PENDING>{EOL} {
-	const Token *token = pending.getNext();
+	Token *token = CONTEXT()->pending.getNext();
 	if (token != NULL)
 	{
 		unput('\n');
-		yylval->token = new Token(*token);
+		yylval->token = token;
 		return token->id;
 	}
-	previousTokens.reset();
-	currentTokens.swap(previousTokens);
-	pending.reset();
+	CONTEXT()->previousTokens.reset();
+	CONTEXT()->currentTokens.swap(CONTEXT()->previousTokens);
+	CONTEXT()->pending.reset();
 	BEGIN(INITIAL);
 }
 
@@ -357,7 +215,9 @@ STRONG                  "'''''"
 
 <OPEN,LIST_MODE>{OWS}"---""-"+{OWS}/{EOL} {
 	EMIT_TEXT(TOK_LINE, "");
-	pending = currentTokens.process(previousTokens);
+	CONTEXT()->currentTokens.process(
+		CONTEXT()->previousTokens,
+		CONTEXT()->pending);
 	BEGIN(PENDING);
 }
 
@@ -385,18 +245,20 @@ STRONG                  "'''''"
 
 
 <<EOF>> {
-	if (!pending.hasNext())
+	if (!CONTEXT()->pending.hasNext())
 	{
-		pending = currentTokens.process(previousTokens);
+		CONTEXT()->currentTokens.process(
+			CONTEXT()->previousTokens,
+			CONTEXT()->pending);
 		// clean up things to avoid an infinity loop here
-		previousTokens.reset();
-		currentTokens.reset();
+		CONTEXT()->previousTokens.reset();
+		CONTEXT()->currentTokens.reset();
 	}
 
-	const Token *token = pending.getNext();
+	Token *token = CONTEXT()->pending.getNext();
 	if (token != NULL)
 	{
-		yylval->token = new Token(*token);
+		yylval->token = token;
 		return token->id;
 	}
 	else
@@ -406,7 +268,9 @@ STRONG                  "'''''"
 
 <OPEN,CONTENT>{EOL} {
 	unput('\n');
-	pending = currentTokens.process(previousTokens);
+	CONTEXT()->currentTokens.process(
+		CONTEXT()->previousTokens,
+		CONTEXT()->pending);
 	BEGIN(PENDING);
 }
 
@@ -427,9 +291,9 @@ STRONG                  "'''''"
 }
 
 
-<CONTENT>{STRONG}		{ EMIT_TOGGLE(statements[STATE_STRONG], TOK_OPEN_STRONG, TOK_CLOSE_STRONG ); }
-<CONTENT>{BOLD}			{ EMIT_TOGGLE(statements[STATE_BOLD],   TOK_OPEN_BOLD,   TOK_CLOSE_BOLD   ); }
-<CONTENT>{ITALIC}		{ EMIT_TOGGLE(statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
+<CONTENT>{STRONG}		{ EMIT_TOGGLE(CONTEXT()->statements[STATE_STRONG], TOK_OPEN_STRONG, TOK_CLOSE_STRONG ); }
+<CONTENT>{BOLD}			{ EMIT_TOGGLE(CONTEXT()->statements[STATE_BOLD],   TOK_OPEN_BOLD,   TOK_CLOSE_BOLD   ); }
+<CONTENT>{ITALIC}		{ EMIT_TOGGLE(CONTEXT()->statements[STATE_ITALIC], TOK_OPEN_ITALIC, TOK_CLOSE_ITALIC ); }
 
 
 <CONTENT>"`"+[^`\n]+"`"+ {

@@ -12,7 +12,6 @@ add_custom_target(parser_flex COMMAND flex
 		--header-file=${CMAKE_CURRENT_SOURCE_DIR}/source/markdowntown.l.hh
 		${CMAKE_CURRENT_SOURCE_DIR}/source/markdowntown.l)
 
-
 file(GLOB PARSER_SOURCES
 	"source/*.cc")
 

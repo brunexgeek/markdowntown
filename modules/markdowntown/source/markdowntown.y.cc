@@ -648,10 +648,10 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   254,   254,   258,   260,   265,   266,   267,   268,   269,
-     270,   271,   272,   276,   281,   286,   291,   296,   301,   306,
-     311,   317,   319,   324,   325,   326,   327,   328,   329,   330,
-     331,   335,   340,   345,   350,   355,   360,   365,   372,   377,
-     382,   387,   389,   394,   400
+     270,   271,   272,   276,   281,   289,   294,   299,   304,   309,
+     314,   320,   322,   327,   328,   329,   330,   331,   332,   333,
+     334,   338,   343,   348,   353,   358,   363,   368,   375,   380,
+     385,   390,   392,   397,   403
 };
 #endif
 
@@ -1528,157 +1528,160 @@ yyreduce:
 
   case 14:
 #line 282 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
-    { TOP()->type = NTY_HEADING; TOP()->counter = (yyvsp[-2].token)->counter; }
-#line 1533 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+    {
+		TOP()->type = NTY_HEADING;
+		TOP()->counter = (yyvsp[-2].token)->counter;
+	}
+#line 1536 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 287 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 290 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_PARAGRAPH; }
-#line 1539 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1542 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 292 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 295 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_BLOCKQUOTE; TOP()->counter = (yyvsp[-2].token)->counter; }
-#line 1545 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1548 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 297 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 300 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_UNORDERED_LIST; }
-#line 1551 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1554 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 302 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 305 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_ORDERED_LIST; }
-#line 1557 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1560 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 307 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 310 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_CONTINUATION; }
-#line 1563 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1566 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 312 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 315 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { PUSH_TOKEN(NTY_LINE, (yyvsp[0].token)); }
-#line 1569 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1572 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 318 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 321 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_BLOCK, 1); }
-#line 1575 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1578 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 320 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 323 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(0, 1); }
-#line 1581 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1584 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 336 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 339 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { PUSH_TOKEN(NTY_TEXT, (yyvsp[0].token)); }
-#line 1587 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1590 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 341 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 344 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { PUSH_TOKEN(NTY_MACRO_IDENTIFIER, (yyvsp[0].token)); }
-#line 1593 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1596 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 346 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 349 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { PUSH_TOKEN(NTY_RAW_TEXT, (yyvsp[0].token)); }
-#line 1599 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1602 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 351 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 354 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_BOLD; }
-#line 1605 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1608 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 356 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 359 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_ITALIC; }
-#line 1611 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1614 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 361 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 364 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { TOP()->type = NTY_STRONG; }
-#line 1617 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1620 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 366 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 369 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
 		PUSH_TOKEN(NTY_CODE, (yyvsp[0].token));
 	}
-#line 1625 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1628 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 373 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 376 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_INLINE_URL, 2); }
-#line 1631 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1634 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 378 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 381 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
 		PUSH(NTY_MACRO_PARAM_LIST);
 		COMBINE(NTY_MACRO, 2);
 	}
-#line 1640 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1643 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 383 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 386 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_MACRO, 2); }
-#line 1646 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1649 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 388 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 391 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(NTY_MACRO_PARAM_LIST, 1); }
-#line 1652 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1655 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 390 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 393 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     { COMBINE(0, 1); }
-#line 1658 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1661 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 395 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 398 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
 		PUSH(NTY_MACRO_IDENTIFIER);
 		PUSH_TOKEN(NTY_MACRO_VALUE, (yyvsp[0].token));
 		COMBINE(NTY_MACRO_PARAM, 2);
 	}
-#line 1668 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1671 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 401 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
+#line 404 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1646  */
     {
 		PUSH_TOKEN(NTY_MACRO_IDENTIFIER, (yyvsp[-1].token));
 		PUSH_TOKEN(NTY_MACRO_VALUE, (yyvsp[0].token));
 		COMBINE(NTY_MACRO_PARAM, 2);
 	}
-#line 1678 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1681 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1682 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
+#line 1685 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1906,7 +1909,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 408 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1906  */
+#line 411 "/media/dados/projetos/markdowntown/modules/markdowntown/source/markdowntown.y" /* yacc.c:1906  */
 
 
 const char *markdowntown_get_token_name( int tok )

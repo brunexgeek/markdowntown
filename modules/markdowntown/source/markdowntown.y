@@ -279,7 +279,10 @@ Empty:
 
 Heading:
 	TOK_OPEN_HEADING Text TOK_CLOSE_HEADING
-	{ TOP()->type = NTY_HEADING; TOP()->counter = $1->counter; }
+	{
+		TOP()->type = NTY_HEADING;
+		TOP()->counter = $1->counter;
+	}
 	;
 
 Paragraph:

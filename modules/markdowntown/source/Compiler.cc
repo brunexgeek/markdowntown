@@ -1,6 +1,7 @@
 #include <fstream>
 #include "markdowntown.y.hh"
 #include "markdowntown.l.hh"
+#include "TokenList.hh"
 #include <markdowntown/Compiler.hh>
 
 void markdowntown_set_column (int  column_no , yyscan_t yyscanner);
@@ -9,7 +10,7 @@ void markdowntown_set_column (int  column_no , yyscan_t yyscanner);
 namespace markdowntown {
 
 
-Compiler::Compiler()
+Compiler::Compiler() : root(NULL)
 {
 
 }
@@ -17,7 +18,7 @@ Compiler::Compiler()
 
 Compiler::~Compiler()
 {
-
+	delete root;
 }
 
 
@@ -48,12 +49,14 @@ void Compiler::printTokens(
 	YYSTYPE temp;
 	void *scanner = NULL;
 	void *scanString = NULL;
+	LexerContext lexerContext;
 
 	// initialize the lexer
 	markdowntown_lex_init(&scanner);
 	if (scanner == NULL) return;
 	scanString = markdowntown__scan_string(content.c_str(), scanner);
 	if (scanString == NULL) goto ESCAPE;
+	markdowntown_set_extra(&lexerContext, scanner);
 	markdowntown_set_lineno(1, scanner);
 	markdowntown_set_column(1, scanner);
 	markdowntown_set_debug(0, scanner);
@@ -128,7 +131,8 @@ bool Compiler::parse()
 {
 	void *scanner;
 	void *scanString;
-	parser_context_t context;
+	parser_context_t parserContext;
+	LexerContext lexerContext;
 	bool result = false;
 
 	// initializes the lexer
@@ -136,24 +140,29 @@ bool Compiler::parse()
 	if (scanner == NULL) return false;
 	scanString = markdowntown__scan_string(content.c_str(), scanner);
 	if (scanString == NULL) goto ESCAPE1;
+	markdowntown_set_extra(&lexerContext, scanner);
 	markdowntown_set_lineno(1, scanner);
 	markdowntown_set_column(1, scanner);
 	markdowntown_set_debug(0, scanner);
 
 	// initializes the parser
-	context.lexer = scanner;
-	context.fileName = "bla";
+	parserContext.lexer = scanner;
+	parserContext.fileName = "bla";
 
 	// parses the input text generating the AST
-	if (markdowntown_parse(&context) != 0)
+	if (markdowntown_parse(&parserContext) != 0)
 		goto ESCAPE2;
 
-	if (!context.stack.empty())
+	if (!parserContext.stack.empty())
 	{
-		root = context.stack[0];
+		root = parserContext.stack[0];
+		#ifndef NDEBUG
 		root->print(std::cerr, markdowntown::Node::name);
+		#endif
 		prune(root);
+		#ifndef NDEBUG
 		root->print(std::cerr, markdowntown::Node::name);
+		#endif
 		result = true;
 	}
 	else
