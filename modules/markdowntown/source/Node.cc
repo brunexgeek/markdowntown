@@ -49,8 +49,8 @@ Node::Node(
 
 Node::Node(
 	int type,
-	const std::string &text ) : type(type), counter(0), line(1), column(1), parent(NULL),
-		prevNode(NULL), nextNode(NULL), children(NULL), text(text)
+	const std::string &text ) : text(text), type(type), counter(0), line(1), column(1), parent(NULL),
+		prevNode(NULL), nextNode(NULL), children(NULL)
 {
 }
 

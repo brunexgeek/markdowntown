@@ -502,13 +502,8 @@ STRONG                  "'''''"
 		EMIT_TEXT(TOK_MACRO_IDENTIFIER, name);
 		EMIT_TEXT(TOK_MACRO_VALUE, content);
 	}
-
 }
 
-<MACRO_PARAM>{OWS}{IDENTIFIER}{OWS}"=" {
-	yytext[ strlen(yytext) - 1 ] = ' ';
-
-}
 
 <MACRO>"}}" |
 <MACRO_PARAM>"}}" {
