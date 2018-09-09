@@ -43,6 +43,7 @@ class HtmlExporter
 		int headings[6];
 		std::vector<std::string> css;
 		std::vector<HeadingEntry> titles;
+		std::string charSet;
 
 		void writeChildren(
 			std::ostream &out,
@@ -89,6 +90,9 @@ class HtmlExporter
 
 		void writeTOC(
 			std::ostream &out,
+			const Node &node );
+
+		void findCharSet(
 			const Node &node );
 
 };

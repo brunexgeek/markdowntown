@@ -224,15 +224,42 @@ void HtmlExporter::write(
 {
 	findCSS(node);
 	findTitles(node);
+	findCharSet(node);
+
 	resetHeading();
 
-	out << "<html><head>";
+	out << "<html><head>\n";
+
 	std::vector<std::string>::const_iterator it = css.begin();
 	for (; it != css.end(); ++it)
-		out << "<link rel='stylesheet' type='text/css' href='" << *it << "'/>";
-	out << "</head><body>";
+		out << "<link rel='stylesheet' type='text/css' href='" << *it << "'/>\n";
+
+	if (!charSet.empty())
+		out << "<meta charset='" << charSet << "'>\n";
+
+	out << "</head><body>\n";
 	writeNode(out, node);
 	out << "</body></html>";
+}
+
+
+void HtmlExporter::findCharSet(
+	const Node &node )
+{
+	Node *current = node.first();
+	while (current != NULL)
+	{
+		if (current->type == NTY_PARAGRAPH && current->first() != NULL)
+		{
+			Node *item = current->first();
+			if (item->type == NTY_MACRO && item->first()->text == "CharacterSet")
+			{
+				Macro macro(*item);
+				charSet = macro.getParameter(0);
+			}
+		}
+		current = current->next();
+	}
 }
 
 

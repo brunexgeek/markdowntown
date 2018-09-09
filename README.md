@@ -95,11 +95,14 @@ The following macros are available for now:
 `{{TOC}}`
 Generate a table of contents.
 
-`{{StyleSheet | file.css }}`
+`{{ StyleSheet | file.css }}`
 Insert a reference to some CSS file in the output HTML.
 
-`{{Format | CSS classes | text }}`
+`{{ Format | CSS classes | text }}`
 Insert a HTML `span` element using the given CSS classes and containing the specified text.
+
+`{{ CharacterSet | encoding name }}`
+Define the character set used in the document. This macro generates a HTML `meta:charset` element.
 
 
 ### Raw text
